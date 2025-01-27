@@ -1,106 +1,80 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {first, Observable, Subject, switchMap, take} from "rxjs";
+import {first, Subject} from "rxjs";
 import {ActivatedRoute, Router} from "@angular/router";
-import {map, takeUntil} from "rxjs/operators";
-import {UserModal} from "../../shared/modal/user";
-import {ClipboardService} from "../../shared/clipboard.service";
-import {UsersService} from "../../shared/users.service";
-import {AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {ResultModal} from "../../shared/modal/result";
-import {QuizModal} from "../../shared/modal/quiz";
-import {QuestionModal} from "../../shared/modal/question";
+import {takeUntil} from "rxjs/operators";
+import {AuthService} from "../../shared/auth/auth.service";
+import {CategoryService} from "../../shared/category.service";
+import {CategoryModal} from "../../shared/modal/category";
 
 @Component({
-  selector: 'app-user-edit',
-  templateUrl: './user-edit.component.html',
-  styleUrls: ['./user-edit.component.sass']
+  selector: 'app-tag-create',
+  templateUrl: './tag-create.component.html',
+  styleUrls: ['./tag-create.component.sass']
 })
-export class UserEditComponent implements OnInit, OnDestroy {
-
-  // @ts-ignore
-  editForm: FormGroup;
-  public user: UserModal | undefined = undefined;
-  public userId: string | undefined;
-  private unsubscribe$ = new Subject<void>();
-  public userFound: boolean = true;
-  isLoading:boolean = true;
+export class TagCreateComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     public router: Router,
-    private userService: UsersService,
-    private clipboardService: ClipboardService,
-    private fb: FormBuilder
+    private authService: AuthService,
+    private categoryService: CategoryService
   ) { }
 
-  ngOnInit(): void {
-    this.initForm();
-    this.route.params.pipe(
-      map(params => params['id']),
-      switchMap(username => this.userService.getUserID(username))
-    ).pipe(first()).subscribe(userID => {
-      this.userId = userID;
-      this.userService.getUserData(userID).pipe(first()).subscribe(user => {
-        if (!user) {
-          this.userFound = false;
-          return;
-        }
-        this.user = user as UserModal;
-        this.fillFormWithData(this.user);
-        this.isLoading = false;
-    })})
-  }
-  editUser(userName: string): void {
-    this.router.navigate(["user", userName]);
-  }
+  isLoading: Boolean = false;
 
-  getLimitedText(text: string, limit: number): string {
-    if(!text)
-      return "";
+  categories: CategoryModal[] = [];
 
-    if (text.length > limit) {
-      return text.substring(0, limit) + '...';
-    } else {
-      return text;
-    }
-  }
-  initForm(): void {
-    this.editForm = this.fb.group({
-      name: ["", Validators.required],
-      attempts: [""],
-      isAdmin: [""],
-      isPaid: [""],
+  public categoryIDs: string[] = [];
+  public categoriesFound: boolean = true;
+  public pageSize: number = 10;
+  public currentPage: number = 1;
+  private currentIndex: number = 0;
+  private unsubscribe$ = new Subject<void>();
+
+  ngOnInit() {
+    this.isLoading = true;
+    this.categoryService.getCategories().pipe(first()).subscribe((categoryModals: CategoryModal[]) => {
+      for (const category of categoryModals) {
+        this.categoryIDs = [...this.categoryIDs, category.id]
+      }
+      if (this.categoryIDs.length === 0) {
+        console.log('categories',this.categoryIDs);
+        this.categoriesFound = false;
+      } else {
+        this.loadMoreCategories();
+      }
+      this.isLoading = false;
     });
   }
-
-  fillFormWithData(user: UserModal): void {
-    this.editForm.patchValue({
-      name: user.username,
-      attempts: user.attempts,
-      isAdmin: user.isAdmin,
-      isPaid: user.isPaid,
-    });
-  }
-  mapFormToModal(){
-    return {
-      username: this.editForm.get('name')?.value,
-      attempts: this.editForm.get('attempts')?.value,
-      isAdmin: this.editForm.get('isAdmin')?.value,
-      isPaid: this.editForm.get('isPaid')?.value,
-    };
-  }
-  submit(): void {
-    if (this.editForm.valid) {
-      this.isLoading = true;
-      const data =  this.mapFormToModal();
-      console.log('data',data)
-      this.userService.updateUser(this.userId, data).then(res => {
-          console.log(res)
-          this.isLoading = false;
+  loadMoreCategories(): void {
+    const categorySubset = this.categoryIDs.slice(this.currentIndex, this.currentIndex + this.pageSize);
+    this.categoryService.getCategoriesByIDs(categorySubset).pipe(takeUntil(this.unsubscribe$))
+      .subscribe((categories) => {
+        console.log('categories',categories);
+        for (const category of categories) {
+          if(!category)
+            return;
+          this.categories = [...this.categories, category];
         }
-      )
-    }
-  }
+      });
 
+    this.currentIndex += this.pageSize;
+  }
+  editCategory(categoryId: string): void {
+    this.router.navigate(["tag-create", categoryId]);
+  }
+  pageCategoriesChange(newPage: number): void {
+    this.currentPage = newPage;
+    this.loadMoreCategories();
+  }
+  get isAdmin() {
+    return this.authService.isAdmin;
+  }
+  navigate(categoryId: string){
+    this.router.navigate(["tag", categoryId])
+  }
+  get isPaid() {
+    return this.authService.isPaid;
+  }
   ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();

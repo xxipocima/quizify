@@ -5,13 +5,29 @@
 </div>
 <div class="home-container">
 <div style="padding: 60px"></div>
+  <div class="submit-wrapper">
+    <button mat-flat-button color="accent" (click)="this.router.navigate(['test/Awareness'])">
+      <i-bs width="50" height="50" name="check2-circle"></i-bs>
+      Start new Test!
+    </button>
+    <div style="padding: 20px"></div>
+    <button mat-flat-button color="primary" (click)="this.router.navigate(['test/Knowledge'])">
+      <i-bs width="50" height="50" name="check2-circle"></i-bs>
+      Start new Knowledge Test!
+    </button>
+    <div style="padding: 20px"></div>
+    <button mat-stroked-button (click)="this.router.navigate(['test/Skills'])">
+      <i-bs width="50" height="50" name="check2-circle"></i-bs>
+      Start new Skills Test!
+    </button>
+  </div>
 
   <main *ngIf="!isLoading">
   <app-carousel-slides [items]="promoQuizzes"></app-carousel-slides>
 
   <div style="padding: 20px"></div>
-  <h3>Categories</h3>
-<app-carousel-category [items]="categories"></app-carousel-category>
+<!--  <h3 *ngIf="isAdmin">Tags</h3>-->
+<!--<app-carousel-category *ngIf="isAdmin" [items]="categories"></app-carousel-category>-->
   </main>
 </div>
 <app-footer *ngIf="!isLoading"></app-footer>

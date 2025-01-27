@@ -5,26 +5,25 @@
     <mat-spinner></mat-spinner>
   </div>
 
-
   <mat-card *ngIf="isEditQuizNotFound">
     <a class="logo-wrapper" href="/">
-      <img class="logo"  height="70"  src="/assets/quizify_logo.svg" alt="Logo Quizify" />
+      <img class="logo"  height="70"  src="/assets/home-page-154.png" alt="Mindcodia" />
     </a>
 
-    <mat-card-title>{{"Quiz not found"}}</mat-card-title>
+    <mat-card-title>{{"Questions not found"}}</mat-card-title>
 
     <mat-card-content  style="text-align: center">
 
       <div>
-        <p>The quiz you're looking for doesn't exist.</p>
+        <p>The questions you're looking for doesn't exist.</p>
       </div>
       <button mat-flat-button class="submit-btn" (click)="this.router.navigate(['/'])" color="primary">Back to Home</button>
     </mat-card-content>
   </mat-card>
 
   <mat-card *ngIf="!isLoading && !quizId && !isEditQuizNotFound">
-    <mat-card-title *ngIf="!editQuizId" style="margin-bottom: 20px">Create quiz!</mat-card-title>
-    <mat-card-title *ngIf="editQuizId" style="margin-bottom: 20px">Edit quiz!</mat-card-title>
+    <mat-card-title *ngIf="!editQuizId" style="margin-bottom: 20px">Create questions!</mat-card-title>
+    <mat-card-title *ngIf="editQuizId" style="margin-bottom: 20px">Edit questions!</mat-card-title>
     <mat-card-content>
 <form [formGroup]="quizForm" (ngSubmit)="submitQuiz()">
   <mat-form-field appearance="fill" class="quiz-form__field">
@@ -45,8 +44,6 @@
       <mat-option *ngFor="let category of filteredCategories | async" [value]="category" (onSelectionChange)="updateLastValid($event, category)">{{category}}</mat-option>
     </mat-autocomplete>
   </mat-form-field>
-
-
 
   <h5>Questions</h5>
 
@@ -72,18 +69,23 @@
           Correct
         </div>
 
-          <div  *ngFor="let option of getOptionsArray(question).controls; let optionIndex = index">
+          <div *ngFor="let option of getOptionsArray(question).controls; let optionIndex = index" [formGroupName]="optionIndex">
 
             <div class="option">
               <mat-radio-button color="primary" [value]="optionIndex" ></mat-radio-button>
+              <mat-form-field class="quiz-form__field-points">
+                <mat-label>Points</mat-label>
+                <mat-select formControlName="points" required>
+                  <mat-option *ngFor="let point of points" [value]="point.value">{{point.viewValue}}</mat-option>
+                </mat-select>
+              </mat-form-field>
             <mat-form-field appearance="fill" class="quiz-form__field">
               <mat-label>Option {{optionIndex + 1}}</mat-label>
-              <input matInput [formControlName]="optionIndex" required>
+              <input matInput formControlName="option" required>
               <button [disabled]="getOptionsArray(question).length<=2"  mat-icon-button matSuffix  color="warn" type="button" (click)="removeOption(questionIndex, optionIndex)" matTooltip="Remove">
-        <i-bs  name="dash-circle"></i-bs>
+                <i-bs  name="dash-circle"></i-bs>
               </button>
             </mat-form-field>
-
             </div>
 
           </div>

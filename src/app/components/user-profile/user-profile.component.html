@@ -42,13 +42,17 @@
                 </p>
               </div>
             </div>
-            <h4>Your quizzes</h4>
+            <mat-card-content>
+              <button mat-flat-button color="primary" (click)="editUser(user.username)">Edit profile</button>
+            </mat-card-content>
+            <div style="padding: 20px"></div>
+            <h4>Your results</h4>
             <div class="spinner" *ngIf="isLoading">
               <mat-spinner></mat-spinner>
             </div>
             <div clas="quizzes" *ngIf="!isLoading">
               <div *ngIf="quizzes.length==0">
-                no quizzes found
+                no results found
               </div>
               <div >
                 <div class="quiz-grid" *ngFor="let quiz of quizzes | slice: (currentPage-1) * pageSize : currentPage * pageSize; let i = index">
@@ -57,9 +61,9 @@
                   <div class="quiz-category">{{ quiz.categoryName }}</div>
 <!--                  <div class="quiz-created">{{ quiz.created }}</div>-->
                   <div class="quiz-actions">
-                    <button  (click)="solveQuiz(quiz)" mat-flat-button color="primary" type="button" matTooltip="Take the quiz">
-                      <i-bs width="20" height="20" name="file-earmark-check"></i-bs> Take
-                    </button>
+<!--                    <button  (click)="solveQuiz(quiz)" mat-flat-button color="primary" type="button" matTooltip="Take the quiz">-->
+<!--                      <i-bs width="20" height="20" name="file-earmark-check"></i-bs> Take-->
+<!--                    </button>-->
                     <button (click)="editQuiz(quiz)" mat-stroked-button type="button" matTooltip="Edit the quiz">
                       <i-bs width="20" height="20" name="pencil-square"></i-bs> Edit
                     </button>

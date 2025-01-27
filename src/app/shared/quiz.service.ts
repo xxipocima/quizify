@@ -25,17 +25,22 @@ export class QuizService {
   questionData: QuestionModal[] = [];
 
   answers: number[] = []
+  points: number[] = []
+  answersTime: any[] = []
   seconds: number = 0;
   timer = null;
+  saveResults = null;
   qnProgress: number = 0;
   correctAnsCount: number = 0;
   quizId = "";
-  constructor(private authService: AuthService, private http: HttpClient, private fireStore: AngularFirestore, public router: Router) {
-
-  }
-
-
-
+  resultID = "";
+  tagId: string | undefined = "";
+  constructor(
+    private authService: AuthService,
+    private http: HttpClient,
+    private fireStore: AngularFirestore,
+    public router: Router
+  ) {}
   async addQuizToCollection(collectionId: string, quizId: string, collection: string): Promise<void> {
     const userRef = this.fireStore.collection(collection).doc(collectionId).ref;
 
@@ -110,7 +115,25 @@ export class QuizService {
       if (res.exists && res.data()) {
         const quizData = res.data() as QuizModal;
         quizData.quizID = quizID;
+        quizData.questions = quizData.questions
+          .map(value => ({ value, sort: Math.random() }))
+          .sort((a, b) => a.sort - b.sort)
+          .map(({ value }) => value);
         return quizData;
+      } else {
+        return null;
+      }
+    }));
+  }
+
+  getQuizQuestions(quizID: string) {
+    return this.fireStore.collection('quizzes').doc(quizID).get().pipe(map(res => {
+      if (res.exists && res.data()) {
+        const quizData = res.data() as QuizModal;
+        return quizData.questions = quizData.questions
+          .map(value => ({ value, sort: Math.random() }))
+          .sort((a, b) => a.sort - b.sort)
+          .map(({ value }) => value);
       } else {
         return null;
       }
@@ -126,8 +149,6 @@ export class QuizService {
 
         const categoryRef = this.fireStore.collection('categories').doc(quiz.categoryId).ref;
 
-
-
         await categoryRef.update({
           quizzes: firebase.firestore.FieldValue.arrayRemove(quizId)
         });
@@ -141,15 +162,25 @@ export class QuizService {
 
       }
     )}
-
-
-    getQuizzes(quizIDs: string[]) {
+  getQuizzes(quizIDs: string[]) {
 
     if(quizIDs == undefined) null;
     return from(quizIDs).pipe(
       concatMap(quizID => this.getQuizData(quizID)),
       toArray()
     );
+  }
+  getQuizzesQuestions(quizIDs: string[]) {
+    if(quizIDs == undefined) null;
+    return from(quizIDs).pipe(
+      concatMap(quizID => this.getQuizQuestions(quizID)),
+      toArray()
+    );
+  }
+
+  totalScore():number {
+      const sum = this.points.reduce((partialSum, a) => partialSum + a, 0);
+      return sum;
   }
 
   signOut() {

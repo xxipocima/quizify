@@ -14,5 +14,5 @@ library.add(...iconListSolid, ...iconListRegular);
   styleUrls: ['./app.component.sass']
 })
 export class AppComponent {
-  title = 'Quizify';
+  title = 'Mindcodia';
 }

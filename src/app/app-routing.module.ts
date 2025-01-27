@@ -12,6 +12,10 @@ import {ResultComponent} from "./components/result/result.component";
 import {QuizCreatorComponent} from "./components/quiz-creator/quiz-creator.component";
 import {CategoryComponent} from "./components/category/category.component";
 import {UserComponent} from "./components/user/user.component";
+import {UserEditComponent} from "./components/user-edit/user-edit.component";
+import {TagCreateComponent} from "./components/tag-create/tag-create.component";
+import {PackageComponent} from "./components/package/package.component";
+import {QuizByTagComponent} from "./components/quiz-by-tag/quiz-by-tag.component";
 
 const routes: Routes = [
   {
@@ -50,22 +54,45 @@ const routes: Routes = [
     component: ResultComponent
   },
   {
-    path: 'create',
+    path: 'create-quiz',
     component: QuizCreatorComponent,
     canActivate: [AuthGuard]
   },
   {
-    path: 'edit/:id',
+    path: 'edit-quiz/:id',
     component: QuizCreatorComponent,
     canActivate: [AuthGuard]
   },
   {
-    path: 'category/:id',
+    path: 'tag/:id',
     component: CategoryComponent
   },
   {
+    path: 'tag-create',
+    component: TagCreateComponent
+  },
+  {
     path: 'user/:id',
+    component: UserComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'user-edit/:id',
+    component: UserEditComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'test/:id',
+    component: QuizByTagComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'users',
     component: UserComponent
+  },
+  {
+    path: 'package',
+    component: PackageComponent
   },
   { path: '**', redirectTo: '' }
 ];

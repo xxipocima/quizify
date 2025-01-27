@@ -14,14 +14,17 @@ export class QuizModal {
 import {QuestionModal} from "./question";
 import {CategoryModal} from "./category";
 
-export interface QuizModal {
+export interface ResultModal {
 
-     name: string;
-     description: string;
-     questions: QuestionModal[];
-     categoryId: string;
-     authorId: string;
-     quizID?: string;
-     authorName?: string;
-     categoryName?: string;
+  questionData: QuestionModal[];
+  answers: number[];
+  points: number[];
+  answersTime: any[];
+  seconds: number;
+  qnProgress: number;
+  correctAnsCount: number;
+  score: number;
+  userId: string;
+  resultID?: string;
+  categoryName?: string;
 }

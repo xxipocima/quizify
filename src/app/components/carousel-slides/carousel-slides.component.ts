@@ -17,7 +17,7 @@ import {Router} from "@angular/router";
 })
 export class CarouselSlidesComponent {
 
-  @Input() items: PromoQuizModal[] = [];
+  @Input() items: any[] = [];
   images = [700, 533, 807, 124].map((n) => `https://picsum.photos/id/${n}/900/500`);
 
   constructor(config: NgbCarouselConfig, public router: Router) {

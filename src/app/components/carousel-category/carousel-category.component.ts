@@ -15,7 +15,7 @@ export class CarouselCategoryComponent extends CarouselComponent{
   iconNames = IconNamesEnum;
 
   navigate(categoryId: string){
-    this.router.navigate(["category", categoryId])
+    this.router.navigate(["tag", categoryId])
   }
 
 }

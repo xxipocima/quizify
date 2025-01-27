@@ -1,23 +1,57 @@
 <mat-toolbar class="mat-elevation-z1" color="primary">
   <div class="fill-remaining-space" >
   <a  href="">
-    <img class="nav-logo"  height="40"  src="assets/quizify_logo.svg" alt="Logo Quizify"  />
+    <img class="nav-logo"  height="40"  src="assets/home-page-154.png" alt="Home page"  />
   </a>
   </div>
-  <button mat-button (click)="this.router.navigate(['create'])">
-    <fa-icon [icon]="faPlus"></fa-icon>
-    Create quiz
+  <button mat-button *ngIf="isLoggedIn && !isSignInPage" (click)="this.router.navigate(['package'])">
+    <fa-icon [icon]="faStickyNote"></fa-icon>
+    Package Purchase
   </button>
   <button mat-button *ngIf="!isLoggedIn && !isSignInPage" (click)="this.router.navigate(['sign-in'])">
     <fa-icon [icon]="faUser"></fa-icon>
     Log In
   </button>
 
+  <mat-menu #adminMenu="matMenu" xPosition="before">
+    <ng-template matMenuContent>
+      <button mat-menu-item *ngIf="isAdmin && isLoggedIn && !isSignInPage" (click)="this.router.navigate(['create-quiz'])">
+        <fa-icon [icon]="faPlus"></fa-icon>
+        Create a question
+      </button>
+      <button mat-menu-item *ngIf="isAdmin && isLoggedIn && !isSignInPage" (click)="this.router.navigate(['create-quiz'])">
+        <fa-icon [icon]="faPlus"></fa-icon>
+        Create a documentation
+      </button>
+      <button mat-menu-item *ngIf="isAdmin && isLoggedIn && !isSignInPage" (click)="this.router.navigate(['create-quiz'])">
+        <fa-icon [icon]="faPlus"></fa-icon>
+        Create a tag
+      </button>
+      <button mat-menu-item *ngIf="isAdmin && isLoggedIn && !isSignInPage" (click)="this.router.navigate(['users'])">
+        <fa-icon [icon]="faPlus"></fa-icon>
+        User Management
+      </button>
+      <button mat-menu-item *ngIf="isAdmin && isLoggedIn && !isSignInPage" (click)="this.router.navigate(['tag-create'])">
+        <fa-icon [icon]="faPlus"></fa-icon>
+        Questions Management
+      </button>
+    </ng-template>
+  </mat-menu>
+  <button mat-button *ngIf="isAdmin && isLoggedIn && !isSignInPage" [matMenuTriggerFor]="adminMenu">
+    <div matButtonIcon class="profile-image-wrapper">
+    </div>
+    <fa-icon [icon]="faUserNinja"></fa-icon>
+    Administrator Menu
+  </button>
   <mat-menu #userMenu="matMenu" xPosition="before">
     <ng-template matMenuContent>
       <button mat-menu-item (click)="this.router.navigate(['account'])">
         <fa-icon [icon]="faUser"></fa-icon>
         My profile
+      </button>
+      <button mat-menu-item (click)="notComletedTest()">
+        <fa-icon [icon]="faFileClipboard"></fa-icon>
+        My test in progress
       </button>
       <button mat-menu-item (click)="onSignOut()">
         <fa-icon [icon]="faRightFromBracket"></fa-icon>

@@ -48,7 +48,7 @@
           </div>
         </div>
 
-        <ngb-pagination [collectionSize]="quizzesIDs.length" [(page)]="currentPage" [pageSize]="pageSize" (pageChange)="pageChange($event)"></ngb-pagination>
+        <ngb-pagination [collectionSize]="quizzesIDs.length" [(page)]="currentPage" [pageSize]="pageSize" (pageChange)="pageQuizzesChange($event)"></ngb-pagination>
       </ng-container>
 
       <ng-template #noQuizzes>
@@ -57,7 +57,26 @@
     </ng-container>
 
     <ng-template #noUser>
-      <p>No such user found.</p>
+      <h5>Users: {{users ? users.length : 0}}</h5>
+      <ng-container>
+        <div class="row quiz-row">
+          <div class="col-md-6" *ngFor="let user of users">
+            <div *ngIf="user">
+              <mat-card class="quiz-card" *ngIf="user.username">
+                <mat-card-header>
+                  <mat-card-title class="quiz-title">{{ user.username }}</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                  <button mat-flat-button color="primary" (click)="editUser(user.username)">Manage User</button>
+                </mat-card-content>
+
+              </mat-card>
+            </div>
+          </div>
+        </div>
+
+        <ngb-pagination [collectionSize]="users.length" [(page)]="currentPage" [pageSize]="pageSize" (pageChange)="pageUsersChange($event)"></ngb-pagination>
+      </ng-container>
     </ng-template>
   </div>
 </div>

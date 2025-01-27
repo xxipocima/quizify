@@ -1,15 +1,17 @@
 <ngb-carousel  *ngIf="items">
   <ng-template ngbSlide *ngFor="let item of items">
     <div class="image-wrapper" [ngStyle]="{'background-image': item.background }">
-    <!--  <img [src]="image" alt="Random slide" class="mh-100"/>-->
+      <img [src]="item.background" alt="Random slide" class="mh-100"/>
     </div>
     <div class="iconWrapper" >
-      <i-bs width="100%" height="100%" *ngIf="item.categoryIcon"  [name]="item.categoryIcon"></i-bs>
+      <i-bs width="100%" height="100%" *ngIf="item.icon"  [name]="item.icon"></i-bs>
     </div>
     <div class="carousel-caption">
       <h3>{{item.title}}</h3>
       <p>{{item.subtitle}}</p>
-      <button type='button' mat-flat-button color="primary"  (click)="this.router.navigate(['quiz', item.quizId ])"> {{item.buttonText ? item.buttonText : "Take the quiz"}} </button>
+      <p>{{item.attempts}}</p>
+      <h1>{{item.cost}} $</h1>
+      <button type='button' mat-flat-button color="primary"  (click)="this.router.navigate(['quiz', 1 ])"> {{item.buttonText}} </button>
     </div>
   </ng-template>
 </ngb-carousel>

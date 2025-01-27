@@ -10,8 +10,7 @@ import {Router} from "@angular/router";
 import {FormBuilder} from "@angular/forms";
 import {CategoryService} from "../../shared/category.service";
 import {QuizService} from "../../shared/quiz.service";
-
-
+import {AuthService} from "../../shared/auth/auth.service";
 
 @Component({
   selector: 'app-home',
@@ -19,9 +18,12 @@ import {QuizService} from "../../shared/quiz.service";
   styleUrls: ['./home.component.sass']
 })
 export class HomeComponent implements OnInit{
-
-
-  constructor(private categoryService: CategoryService, private quizService: QuizService) { }
+  constructor(
+    private authService: AuthService,
+    private categoryService: CategoryService,
+    public router: Router,
+    private quizService: QuizService
+  ) { }
 
   isLoading: Boolean = false;
 
@@ -63,5 +65,11 @@ export class HomeComponent implements OnInit{
       }
       this.isLoading = false;
     });
+  }
+  get isAdmin() {
+    return this.authService.isAdmin;
+  }
+  get isPaid() {
+    return this.authService.isPaid;
   }
 }

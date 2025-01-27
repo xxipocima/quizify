@@ -1,15 +1,19 @@
-import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormGroup, Validators, FormArray, FormControl, AbstractControl} from '@angular/forms';
+import {Component, OnInit} from '@angular/core';
+import {AbstractControl, FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {QuizModal} from "../../shared/modal/quiz";
 import {CategoryService} from "../../shared/category.service";
 import {QuizService} from "../../shared/quiz.service";
-import {first, Observable, startWith, take} from "rxjs";
+import {Observable, startWith, take} from "rxjs";
 import {map} from "rxjs/operators";
 import {CategoryModal} from "../../shared/modal/category";
 import {QuestionModal} from "../../shared/modal/question";
 import {ActivatedRoute, Router} from "@angular/router";
 import {AuthService} from "../../shared/auth/auth.service";
 
+interface Point {
+  value: number;
+  viewValue: number;
+}
 @Component({
   selector: 'app-quiz-creator',
   templateUrl: './quiz-creator.component.html',
@@ -20,18 +24,30 @@ export class QuizCreatorComponent implements OnInit {
   // @ts-ignore
   quizForm: FormGroup;
   categories: Map<string, string> = new Map();
+  points: Point[] = [
+    {value: -5, viewValue: -5},
+    {value: -4, viewValue: -4},
+    {value: -3, viewValue: -3},
+    {value: -2, viewValue: -2},
+    {value: -1, viewValue: -1},
+    {value: 0, viewValue: 0},
+    {value: 1, viewValue: 1},
+    {value: 2, viewValue: 2},
+    {value: 3, viewValue: 3},
+    {value: 4, viewValue: 4},
+    {value: 5, viewValue: 5},
+  ];
   filteredCategories: Observable<string[]> = new Observable<string[]>();
   lastValidCategory: string = '';
   isOpened: boolean = false;
   isLoading:boolean = true;
-  isSubmitted:boolean =false;
+  isSubmitted:boolean = false;
   isEditQuizNotFound:boolean =false;
 
   quizId: string | undefined;
 
   editQuizId: string | undefined;
 
- //categories: Observable<string[]>;
   constructor(private route: ActivatedRoute, public router: Router, private fb: FormBuilder, private authService: AuthService, private categoryService: CategoryService, private quizService: QuizService) { }
 
   ngOnInit(): void {
@@ -106,10 +122,16 @@ export class QuizCreatorComponent implements OnInit {
     return this.fb.group({
       question: [question.question, Validators.required],
       options: this.fb.array(
-        question.options.map(option => new FormControl(option)),
-        Validators.required
+        question.options.map(option => this.initQuestionOptionWithData(option)
+        )
       ),
       answer: [question.answer, Validators.required]
+    });
+  }
+  initQuestionOptionWithData(option: any): FormGroup {
+    return this.fb.group({
+      points: [option.points, Validators.required],
+      option: [option.option, Validators.required]
     });
   }
 
@@ -138,12 +160,9 @@ export class QuizCreatorComponent implements OnInit {
     }
   }
 
-
   getOptionsArray(control: AbstractControl<any>): FormArray{
      return control.get('options') as FormArray;
   }
-
-
 
   initQuestion(): FormGroup {
     return this.fb.group({
@@ -162,15 +181,15 @@ export class QuizCreatorComponent implements OnInit {
     this.isOpened = true;
   }
 
-
   onClose() {
     this.isOpened = false;
   }
 
-  initOption(): FormControl {
-
-    return new FormControl('')
-
+  initOption(): FormGroup {
+    return this.fb.group({
+      points: [0, Validators.required],
+      option: ['', Validators.required]
+    });
   }
 
   addQuestion(): void {
@@ -202,32 +221,29 @@ export class QuizCreatorComponent implements OnInit {
     const questionModalArray: QuestionModal[] = [];
 
     questionsArray.controls.forEach((questionControl) => {
-      const questionModal: QuestionModal = {
+      const questionModal: { question: any; options: any; answer: any } = {
         question: questionControl.get('question')?.value,
         options: questionControl.get('options')?.value,
         answer: questionControl.get('answer')?.value
       };
 
-      questionModalArray.push(questionModal);
+      questionModalArray.push(<QuestionModal>questionModal);
     });
 
     return questionModalArray;
   }
 
   mapFormToQuizModal(): QuizModal {
-    const quizModal: QuizModal = {
+    return {
       name: this.quizForm.get('name')?.value,
       description: this.quizForm.get('description')?.value,
       questions: this.mapQuestionsArrayToQuestionModalArray(this.quizForm.get('questions') as FormArray),
       categoryId: this.quizForm.get('categoryId')?.value,
       authorId: ''
     };
-
-    return quizModal;
   }
 
   submitQuiz(): void {
-
     if (this.quizForm.valid) {
       this.isLoading = true;
       const quizData: QuizModal =  this.mapFormToQuizModal();
@@ -239,8 +255,7 @@ export class QuizCreatorComponent implements OnInit {
             this.quizId = res;
           }
         )
-      }
-      else {
+      } else {
         this.quizService.updateQuiz(this.editQuizId, quizData).then(res => {
             console.log(res)
             this.isLoading = false;
@@ -250,7 +265,12 @@ export class QuizCreatorComponent implements OnInit {
       }
     }
   }
-
+  get isAdmin() {
+    return this.authService.isAdmin;
+  }
+  get isPaid() {
+    return this.authService.isPaid;
+  }
   get questions() {
     return this.quizForm.get('questions') as FormArray;
   }

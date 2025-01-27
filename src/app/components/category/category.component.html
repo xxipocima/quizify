@@ -16,7 +16,7 @@
 
       <h2>{{category.name}}</h2>
 
-      <h5>quizzes: {{category.quizzes ? category.quizzes.length : 0}}</h5>
+      <h5>Questions: {{category.quizzes ? category.quizzes.length : 0}}</h5>
       <ng-container *ngIf="quizzesFound; else noQuizzes">
         <div class="row quiz-row">
           <div class="col-md-6" *ngFor="let quiz of quizzes">
@@ -28,16 +28,22 @@
                 </mat-card-header>
                 <mat-card-content>
                   <p class="quiz-description">{{ getLimitedText(quiz.description, 250) }}</p>
-                  <button mat-flat-button color="primary"  (click)="goToQuiz(quiz.quizID)">Take the quiz</button>
-
-                  <button mat-stroked-button (click)="shareQuiz(quiz.quizID)" >
-                    <i class="bi bi-share"></i>
-                    Share quiz
+<!--                  <button mat-flat-button color="primary" (click)="goToQuiz(quiz.quizID)">Take the quiz</button>-->
+                  <button mat-flat-button color="primary"  (click)="editQuiz(quiz)" type="button" matTooltip="Edit the quiz">
+                    <i-bs width="20" height="20" name="pencil-square"></i-bs> Edit
+                  </button>
+                  <button  (click)="deleteQuiz(quiz)" mat-flat-button color="warn" type="button" matTooltip="Remove the quiz">
+                    <i-bs width="20" height="20" name="trash"></i-bs> Remove
                   </button>
 
-                  <div class="madeBy">
-                  Made by: <a  href="javascript:void(0)" (click)="router.navigate(['user', quiz.authorName])">{{ quiz.authorName }}</a>
-                  </div>
+<!--                  <button mat-stroked-button (click)="shareQuiz(quiz.quizID)" >-->
+<!--                    <i class="bi bi-share"></i>-->
+<!--                    Share quiz-->
+<!--                  </button>-->
+
+<!--                  <div class="madeBy">-->
+<!--                  Made by: <a  href="javascript:void(0)" (click)="router.navigate(['user', quiz.authorName])">{{ quiz.authorName }}</a>-->
+<!--                  </div>-->
 
                 </mat-card-content>
 

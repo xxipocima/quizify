@@ -6,22 +6,27 @@ import {AngularFirestore} from "@angular/fire/compat/firestore";
 import firebase from "firebase/compat";
 import {UserModal} from "./modal/user";
 import {first, from, mergeMap, Observable, of, switchMap, take, tap} from "rxjs";
-import {map} from "rxjs/operators";
+import {concatMap, map, toArray} from "rxjs/operators";
+import {CategoryModal} from "./modal/category";
+import {QuizModal} from "./modal/quiz";
+import {Router} from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
 })
 export class UsersService {
 
-  constructor(public authService: AuthService, private fireStore: AngularFirestore ) {
-  }
+  constructor(
+    public authService: AuthService,
+    public router: Router,
+    private fireStore: AngularFirestore
+  ) {}
 
   isUsernameExists(username: string) {
     return this.fireStore.collection('usernames').doc(username).get().pipe(map(res => {
       return res.exists;
     }))
   }
-
 
   isUserExists(userID: string){
     return this.fireStore.collection('users').doc(userID).get().pipe(map(res => {
@@ -43,12 +48,27 @@ export class UsersService {
     }));
   }
 
+  getUsersIDs(){
+    return this.fireStore.collection('usernames').get().pipe(map(res => {
+      // @ts-ignore
+      // return (res.exists && res.data()) ? res.data()['uid'] : "";
+      return res.docs.map(doc => doc.data()['uid']);
+    }));
+  }
+
   getUserData(userID: string)
   {
     return this.fireStore.collection('users').doc(userID).get().pipe(map(res => {
       // @ts-ignore
       return (res.exists && res.data()) ? res.data() : null;
     }));
+  }
+  getUsers(usersIDs: string[]) {
+    if(usersIDs === undefined) null;
+    return from(usersIDs).pipe(
+      concatMap(userID => this.getUserData(userID)),
+      toArray()
+    );
   }
 
   generateUsername(email: string): Observable<string> {
@@ -60,7 +80,6 @@ export class UsersService {
         if (!userExists) {
           return from([username]);
         }
-
         let newUsername: string;
         return from(
           new Observable<string>(observer => {
@@ -83,14 +102,13 @@ export class UsersService {
     );
   }
 
-
   sendUsersData(user: UserModal) {
     console.log("sendUsersData")
     const userDocRef = this.fireStore.collection('users').doc(user.uid);
       let data = {
         "username": user.username,
         "image": user.image,
-        "quizzes": user.quizzes
+        "quizzes": user.quizzes,
       }
 
     userDocRef.get().pipe(first()).subscribe(docSnapshot => {
@@ -114,13 +132,8 @@ export class UsersService {
 
    if(user.username==undefined)
      return;
-
-
     const userDocNamesRef = this.fireStore.collection('usernames').doc(user.username);
-
     const nameData=  {"uid": user.uid}
-
-
     userDocNamesRef.get().pipe(first()).subscribe(docSnapshot => {
       if (docSnapshot.exists) {
         console.log("exists")
@@ -130,15 +143,37 @@ export class UsersService {
         userDocNamesRef.set(nameData, { merge: true });
       }
     });
-
   }
-
-
-
+  updateUser(userId: string | undefined, data: {
+    username: any;
+    attempts: any;
+    isAdmin: any;
+    isPaid: any
+  }): Promise<void> {
+    return this.fireStore.collection('users').doc(userId).update({
+      username: data.username,
+      attempts: data.attempts,
+      isAdmin: data.isAdmin,
+      isPaid: data.isPaid,
+    }).then(() => {
+      console.log(`User with ID: ${userId} updated successfully.`);
+    }, error => {
+      console.error('Error while updating user: ', error);
+    });
+  }
   updateUserImage(userId: string, imageUrl: string) {
     return this.fireStore.collection('users').doc(userId).update({
       customImage: imageUrl
     });
   }
-
+  updateUserTakedQuiz(userId: string, resultID: string) {
+    return this.fireStore.collection('users').doc(userId).update({
+      takedQuizId: resultID
+    });
+  }
+  updateUserAtempts(userId: string, attempts: number) {
+    return this.fireStore.collection('users').doc(userId).update({
+      attempts: attempts
+    });
+  }
 }

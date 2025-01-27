@@ -41,12 +41,12 @@ export class ResultComponent implements OnInit {
       const userId = this.userDetails.id;
       const questionData = this.quizService.questionData;
       const timeTaken = this.quizService.displayTimeElapsed();
-      const score = this.quizService.correctAnsCount * 10;
+      const score = this.quizService.correctAnsCount * 100;
       if (userId && questionData.length && timeTaken && score >= 0) {
         const finalData = {
           time: timeTaken,
           questionData: questionData,
-          score: score + '/' + (this.quizService.questionData.length * 10)
+          score: score + '/' + (this.quizService.questionData.length * 100)
         }
         return { userId, finalData }
       }

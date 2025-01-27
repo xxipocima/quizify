@@ -8,9 +8,13 @@ import {QuestionModal} from "../../shared/modal/question";
 import {faArrowLeft} from "@fortawesome/free-solid-svg-icons";
 import { Location } from '@angular/common'
 import {QuizModal} from "../../shared/modal/quiz";
-import {first, take} from "rxjs";
+import {first, switchMap, take} from "rxjs";
 import {AuthService} from "../../shared/auth/auth.service";
 import {ResultService} from "../../shared/result.service";
+import {map} from "rxjs/operators";
+import {IconName as BootstrapIconName} from "ngx-bootstrap-icons/lib/types/icon-names.type";
+import {CategoryService} from "../../shared/category.service";
+import {ResultModal} from "../../shared/modal/result";
 
 @Component({
   selector: 'app-quiz-by-tag',
@@ -20,11 +24,16 @@ import {ResultService} from "../../shared/result.service";
 export class QuizByTagComponent implements OnInit {
 
   faArrowLeft = faArrowLeft;
-  selectedAnswer: number = 0;
-  isLoading: Boolean = false;
-  quizID: string = "";
-  isQuizNotFound = false;
-  userAttempts: number = 0;
+  public quizzes: (QuizModal | null)[] = [];
+  public quizzesIDs: string[] = [];
+  public selectedAnswer: number = 0;
+  public isLoading: Boolean = false;
+  public resultID: string = "";
+  public tagName: string = "";
+  public categoryFound: boolean = true;
+  public isQuizNotFound = false;
+  public userAttempts: number = 0;
+  public quizzesFound: boolean = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -32,41 +41,95 @@ export class QuizByTagComponent implements OnInit {
     public UsersService: UsersService,
     public sanitizer: DomSanitizer,
     public router: Router,
-    private location: Location,
     public authService: AuthService,
+    public categoryService: CategoryService,
     public resultService: ResultService
   ) { }
 
   ngOnInit(): void {
+    this.isLoading = true;
+    if(!this.authService.getUserID()){
+      this.router.navigate(['sign-in']);
+      return;
+    }
     const currentUser = JSON.parse(localStorage.getItem('user')!);
     this.userAttempts = this.authService.getAttempts(currentUser)
     if(this.userAttempts <= 0){
       this.router.navigate(['package']);
       return;
     }
-      this.route.params.pipe(first()).subscribe(params => {
-      this.quizID = params['id'];
-      if(this.quizID) {
-        this.getQuizData(this.quizID);
+
+    if (currentUser.takedQuizId === '') {
+      this.resultService.createResult({
+        questionData: [],
+        answers: [],
+        points: [],
+        answersTime: [],
+        seconds: 0,
+        qnProgress: 0,
+        correctAnsCount: 0,
+        score: 0,
+        resultID: '',
+        userId: '',
+        categoryName: '',
+      }).then(res => {
+        this.authService.UpdateUserTakedQuiz(res);
+        this.resultID = res;
+        }
+      )
+
+    this.route.params.pipe(
+      map(params => params['id']),
+      switchMap(id => this.categoryService.getCategory(id))
+    ).pipe(first()).subscribe(category => {
+      if (!category) {
+        this.categoryFound = false;
         return;
       }
-      this.route.queryParams.pipe(first())
-        .subscribe(params => {
-          this.quizID = params['id'];
-          this.getQuizData(this.quizID);
-        }
-        );
+      this.tagName = category.id;
+      if(!category.quizzes){
+        this.quizzesFound = false;
+        return;
+      }
+      this.quizzesIDs = category.quizzes;
+      if (this.quizzesIDs.length === 0) {
+        this.quizzesFound = false;
+      } else {
+        this.getQuizzesQuestions(category.quizzes);
+      }
     });
-    if (currentUser.takedQuizId === '') {
-      this.authService.UpdateUserTakedQuiz(this.quizID);
-    }
-    if (currentUser.takedQuizId !== '' && currentUser.takedQuizId !== this.quizID){
-      this.router.navigate(['/quiz/' + currentUser.takedQuizId]);
+      this.quizService.qnProgress = 0;
+      this.quizService.seconds = 0;
+      this.quizService.resultID = this.resultID;
+      this.quizService.tagId = this.tagName;
+
+    } else {
+      this.resultService.getResultData(currentUser.takedQuizId).pipe(first()).subscribe(
+        res => {
+
+          const result: ResultModal = res as ResultModal;
+
+          if(!result)
+          {
+            this.isQuizNotFound=true;
+            return;
+          }
+          this.quizService.questionData = result.questionData;
+          this.quizService.answers = result.answers;
+          this.quizService.points = result.points;
+          this.quizService.answersTime = result.answersTime;
+          this.quizService.seconds = result.seconds;
+          this.quizService.qnProgress = result.qnProgress;
+          this.quizService.correctAnsCount = result.correctAnsCount;
+          this.quizService.resultID = currentUser.takedQuizId;
+          this.quizService.tagId = result.categoryName;
+          this.startTimer();
+          this.saveResultsAtTimer();
+          this.isLoading = false;
+        }
+      );
     }
 
-    this.quizService.qnProgress = 0;
-    this.quizService.seconds = 0;
-    this.quizService.quizId = this.quizID;
   }
 
   public get valueAsStyle(): any {
@@ -88,38 +151,58 @@ export class QuizByTagComponent implements OnInit {
     return progressValue;
   }
 
-  filterData(id: string, data: any) {
-    return {
-      id: id,
-      answer: data.answer,
-      imageName: data.imageName,
-      options: data.options,
-      question: data.question,
-      participantAnswer: -1
-    }
-  }
-
   // Getting quiz data
-  getQuizData(quizID: string) {
+  getQuizzesQuestions(quizIDs: string[]) {
   //  this.quizService.sendData()
-    this.isLoading = true;
 
-    this.quizService.getQuizData(quizID).pipe(first()).subscribe(
+    this.quizService.getQuizzesQuestions(quizIDs).pipe(first()).subscribe(
       res => {
 
-        const quiz: QuizModal = res as QuizModal;
-
-        this.isLoading = false;
-        if(!quiz)
+        let questions: QuestionModal[] = [];
+        for (let i = 0; i < res.length; i++) {
+          // @ts-ignore
+          questions += res[i];
+        }
+        if(!questions)
         {
           this.isQuizNotFound=true;
+          this.isLoading = false;
           return;
         }
-        const filteredData: QuestionModal[] =  quiz.questions;
-        this.quizService.questionData = filteredData;
+
+        this.quizService.questionData = questions;
         this.startTimer();
+        this.saveResultsAtTimer();
+        this.isLoading = false;
       }
     );
+  }
+  saveResults(){
+    this.isLoading = true;
+    this.resultService.updateResult(this.quizService.resultID, {
+      questionData: this.quizService.questionData,
+      answers: this.quizService.answers,
+      points: this.quizService.points,
+      answersTime: this.quizService.answersTime,
+      seconds: this.quizService.seconds,
+      qnProgress: this.quizService.qnProgress,
+      correctAnsCount: this.quizService.correctAnsCount,
+      score: this.quizService.totalScore(),
+      resultID: this.quizService.resultID,
+      userId: '',
+      categoryName: this.quizService.tagId,
+    }).then(res => {
+        this.isLoading = false;
+      }
+    )
+  }
+
+  // Start timer
+  saveResultsAtTimer() {
+    // @ts-ignore
+    this.quizService.saveResults = setInterval(() => {
+      this.saveResults();
+    }, 5000)
   }
 
   // Start timer
@@ -131,14 +214,16 @@ export class QuizByTagComponent implements OnInit {
   }
 
   selectAnswer(id: any, points: any){
-    console.log(id);
     this.quizService.answers[this.quizService.qnProgress] = id;
     this.quizService.answersTime[this.quizService.qnProgress] = this.quizService.displayTimeElapsed();
     this.quizService.points[this.quizService.qnProgress] = points;
     this.quizService.qnProgress++;
+    this.saveResults();
     if (this.quizService.questionData.length == this.quizService.qnProgress) {
       // @ts-ignore
       clearInterval(this.quizService.timer);
+      // @ts-ignore
+      clearInterval(this.quizService.saveResults);
       this.authService.UpdateUserTakedQuiz('');
       this.authService.UpdateUserAttempts(this.userAttempts - 1);
       this.router.navigate(['/result']);

@@ -42,24 +42,34 @@ import {MatDialogModule} from "@angular/material/dialog";
 import {AvatarDialogComponent} from "./components/user-profile/AvatarDialog.component";
 import { FooterComponent } from './components/footer/footer.component';
 import { UserComponent } from './components/user/user.component';
+import {UserEditComponent} from "./components/user-edit/user-edit.component";
+import {MatCheckboxModule} from "@angular/material/checkbox";
+import {TagCreateComponent} from "./components/tag-create/tag-create.component";
+import {PackageComponent} from "./components/package/package.component";
+import {ResultService} from "./shared/result.service";
+import {QuizByTagComponent} from "./components/quiz-by-tag/quiz-by-tag.component";
 
 
 @NgModule({
     declarations: [
-        AppComponent,
-        SignInComponent,
-        UserProfileComponent,
-        HomeComponent,
-        NavbarComponent,
-        RegisterSuccessComponent,
-        ForgotPasswordComponent,
-        QuizComponent,
-        ResultComponent,
-        CarouselComponent,
-        CarouselCategoryComponent,
-         QuizCreatorComponent,
-         CreateSuccessComponent,
-         CategoryComponent,
+      AppComponent,
+      SignInComponent,
+      UserProfileComponent,
+      HomeComponent,
+      NavbarComponent,
+      RegisterSuccessComponent,
+      ForgotPasswordComponent,
+      QuizComponent,
+      ResultComponent,
+      CarouselComponent,
+      CarouselCategoryComponent,
+      QuizByTagComponent,
+      PackageComponent,
+      QuizCreatorComponent,
+      TagCreateComponent,
+      CreateSuccessComponent,
+      UserEditComponent,
+      CategoryComponent,
       AvatarDialogComponent,
       FooterComponent,
       UserComponent
@@ -84,12 +94,14 @@ import { UserComponent } from './components/user/user.component';
     FormsModule,
     NgbPaginationModule,
     MatDialogModule,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    MatCheckboxModule
   ],
   providers: [
     AuthService,
     AuthGuard,
     SecureInnerPagesGuard,
+    ResultService,
     UsersService,
     ClipboardService,
     {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'outline'}},

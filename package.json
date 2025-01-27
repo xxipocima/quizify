@@ -1,11 +1,11 @@
 {
-  "name": "Quizify",
-  "homepage": "https://daniel-szulc.github.io/quizify/",
+  "name": "Mindcodia",
+  "homepage": "/",
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --output-path docs --base-href /quizify/",
+    "build": "ng build --output-path docs --base-href /quiz/",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },

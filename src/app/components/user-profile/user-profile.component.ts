@@ -3,9 +3,7 @@ import { AuthService } from '../../shared/auth/auth.service';
 import {UsersService} from "../../shared/users.service";
 import {QuizModal} from "../../shared/modal/quiz";
 import {QuizService} from "../../shared/quiz.service";
-import {takeUntil} from "rxjs/operators";
 import {first, take} from "rxjs";
-import {UserModal} from "../../shared/modal/user";
 import {CategoryService} from "../../shared/category.service";
 import {ClipboardService} from "../../shared/clipboard.service";
 import {Router} from "@angular/router";
@@ -39,7 +37,6 @@ export class UserProfileComponent implements OnInit {
 
   loadQuizzes(): void {
     this.isLoading = true;
-    console.log(this.authService.getUserID())
     if(!this.authService.getUserID())
       return;
 
@@ -93,13 +90,11 @@ export class UserProfileComponent implements OnInit {
       }
     });
   }
-
-
   solveQuiz(quiz: QuizModal): void {
     this.router.navigate(['quiz', quiz.quizID])
   }
   editQuiz(quiz: QuizModal): void {
-    this.router.navigate(['edit', quiz.quizID])
+    this.router.navigate(['edit-quiz', quiz.quizID])
   }
 
   shareQuiz(quiz: QuizModal): void {
@@ -122,7 +117,14 @@ export class UserProfileComponent implements OnInit {
       this.authService.UpdateUserImage(result);
     }
   }
-
-
+  editUser(userName: string): void {
+    this.router.navigate(["user-edit", userName]);
+  }
+  get isAdmin() {
+    return this.authService.isAdmin;
+  }
+  get isPaid() {
+    return this.authService.isPaid;
+  }
 
 }

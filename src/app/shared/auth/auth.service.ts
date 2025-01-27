@@ -35,14 +35,13 @@ export class AuthService implements OnInit, OnDestroy{
               {
                 usersService.getUserData(user.uid).pipe(takeUntil(this.destroy$)).subscribe(data => {
                   //  usersService.getUsername(user.uid).pipe(takeUntil(this.destroy$)).subscribe(username => {
-
                   this.saveUser(data, user);
                 })
               }
               else
               {
                 usersService.generateUsername(user.email || "quizifyer").pipe(takeUntil(this.destroy$)).subscribe(username => {
-                  this.saveUser({username: username}, user);
+                  this.saveUser({username: username, attempts: 1, isAdmin: false, isPaid: false, takedQuizId: '', results: []}, user);
                 });
               }
             }
@@ -52,7 +51,6 @@ export class AuthService implements OnInit, OnDestroy{
         localStorage.setItem('user', 'null');
       }
     });
-
   }
 
   ngOnInit(){
@@ -68,8 +66,22 @@ export class AuthService implements OnInit, OnDestroy{
     const user = JSON.parse(localStorage.getItem('user')!);
     return user !== null ? true : false;
   }
-
-
+  currentUser(username: string): boolean {
+    const user = JSON.parse(localStorage.getItem('user')!);
+    return user.username === username;
+  }
+  get isAdmin(): boolean {
+    const user = JSON.parse(localStorage.getItem('user')!);
+    if(user)
+      return user.isAdmin;
+    return false;
+  }
+  get isPaid(): boolean {
+    const user = JSON.parse(localStorage.getItem('user')!);
+    if(user)
+      return user.isPaid;
+    return false;
+  }
   public getUserID(){
     if(this.user)
       return this.user.uid;
@@ -81,12 +93,14 @@ export class AuthService implements OnInit, OnDestroy{
     return null;
   }
 
-
-
-
   saveUser(userFireStore: any, user: User){
     let username:string = userFireStore['username'];
     const customImage = userFireStore['customImage'];
+    const isAdmin = userFireStore['isAdmin'];
+    const takedQuizId = userFireStore['takedQuizId'];
+    const results = userFireStore['results'];
+    const isPaid = userFireStore['isPaid'];
+    const attempts = userFireStore['attempts'];
     const currentUser = JSON.parse(localStorage.getItem('user')!);
     this.userData = user.toJSON();
     if(currentUser)
@@ -98,6 +112,21 @@ export class AuthService implements OnInit, OnDestroy{
 
     if(customImage){
       this.userData = {...this.userData, customImage: customImage};
+    }
+    if(isAdmin){
+      this.userData = {...this.userData, isAdmin: isAdmin};
+    }
+    if(results){
+      this.userData = {...this.userData, results: results};
+    }
+    if(takedQuizId){
+      this.userData = {...this.userData, takedQuizId: takedQuizId};
+    }
+    if(isPaid){
+      this.userData = {...this.userData, isPaid: isPaid};
+    }
+    if(attempts){
+      this.userData = {...this.userData, attempts: attempts};
     }
     else if(!this.userData.photoURL) {
       if(currentUser)
@@ -139,8 +168,20 @@ export class AuthService implements OnInit, OnDestroy{
     }
     return photoURL;
   }
+  getAttempts(user?: any){
+    if(!user)
+      user = this.userData;
+    let attempts = null;
+    if(user?.attempts)
+      attempts = user["attempts"]
 
-
+    if(attempts){
+      return attempts
+    }
+    if(user?.attempts)
+      attempts = user["attempts"];
+    return attempts;
+  }
   CreateUser(user: User | null, email: string, username: string){
     if(user) {
       console.log("CREATE USER")
@@ -234,6 +275,26 @@ export class AuthService implements OnInit, OnDestroy{
     usersService.updateUserImage(this.getUserID(), imageUrl).then(() => {
       if(this.userData) {
         this.userData.customImage = imageUrl;
+        localStorage.setItem('user', JSON.stringify(this.userData));
+      }
+    });
+  }
+
+  UpdateUserTakedQuiz(resultID: string) {
+    const usersService = this.injector.get(UsersService);
+    usersService.updateUserTakedQuiz(this.getUserID(), resultID).then(() => {
+      if(this.userData) {
+        this.userData.takedQuizId = resultID;
+        localStorage.setItem('user', JSON.stringify(this.userData));
+      }
+    });
+  }
+
+  UpdateUserAttempts(attempts: number) {
+    const usersService = this.injector.get(UsersService);
+    usersService.updateUserAtempts(this.getUserID(), attempts).then(() => {
+      if(this.userData) {
+        this.userData.attempts = attempts;
         localStorage.setItem('user', JSON.stringify(this.userData));
       }
     });

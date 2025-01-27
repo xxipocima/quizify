@@ -24,7 +24,7 @@ Welcome to Quizify - an intuitive, dynamic, and interactive quiz platform powere
 
 At the core of Quizify is its capability to offer a seamless, easy-to-use interface for users to build their own quizzes. The application adopts a minimalist approach, keeping the focus on content creation, engagement, and learning. Users can effortlessly curate multi-layered questions, each with a spectrum of potential single-choice answers, shaping the experience that they'd like to deliver.
 
-Under the hood, Quizify leverages Firebase, a modern, robust NoSQL cloud database to securely store and sync user data in real-time. This enables users to access their quizzes, performance metrics, and other personalized content instantly, from anywhere.
+Under the hood, Mindcodia leverages Firebase, a modern, robust NoSQL cloud database to securely store and sync user data in real-time. This enables users to access their quizzes, performance metrics, and other personalized content instantly, from anywhere.
 
 ## Features 🚀
 
@@ -36,7 +36,7 @@ Under the hood, Quizify leverages Firebase, a modern, robust NoSQL cloud databas
 
 ## Installation 🛠️
 
-To run Quizify on your local machine, follow these steps:
+To run Mindcodia on your local machine, follow these steps:
 
 1. Clone the repository to your local machine
 2. Install the required dependencies by running `npm install`
@@ -45,15 +45,15 @@ To run Quizify on your local machine, follow these steps:
 
 ## Usage 📲
 
-Creating and taking quizzes with Quizify is easy. After logging in, users can create a new quiz by providing a title, description, selected category and single-choice questions. To take a quiz, simply select a quiz from the list and answer the questions.
+Creating and taking quizzes with Mindcodia is easy. After logging in, users can create a new quiz by providing a title, description, selected category and single-choice questions. To take a quiz, simply select a quiz from the list and answer the questions.
 
 ## Screenshots 📷
 
-<img src="/screenshots/01.png" alt="Quizify"/>
+<img src="/screenshots/01.png" alt="Mindcodia"/>
 
-<img src="/screenshots/02.png" alt="Quizify"/>
+<img src="/screenshots/02.png" alt="Mindcodia"/>
 
-<img src="/screenshots/03.png" alt="Quizify"/>
+<img src="/screenshots/03.png" alt="Mindcodia"/>
 
 ## Contributing 🤝
 

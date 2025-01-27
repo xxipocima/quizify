@@ -1,15 +1,17 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {first, Observable, Subject, switchMap} from "rxjs";
+import {first, Subject, switchMap} from "rxjs";
 import {ActivatedRoute, Router} from "@angular/router";
 import {CategoryService} from "../../shared/category.service";
 import {map, takeUntil} from "rxjs/operators";
 import {QuizService} from "../../shared/quiz.service";
 import {QuizModal} from "../../shared/modal/quiz";
 import {CategoryModal} from "../../shared/modal/category";
-import {IconName as BootstrapIconName, IconName} from "ngx-bootstrap-icons/lib/types/icon-names.type";
-import {findIconDefinition} from "@fortawesome/fontawesome-svg-core";
+import {IconName as BootstrapIconName} from "ngx-bootstrap-icons/lib/types/icon-names.type";
 import {ClipboardService} from "../../shared/clipboard.service";
 import {UsersService} from "../../shared/users.service";
+import {ConfirmDialogComponent} from "../user-profile/ConfirmDialog.component";
+import {MatDialog} from "@angular/material/dialog";
+import {AuthService} from "../../shared/auth/auth.service";
 
 @Component({
   selector: 'app-category',
@@ -28,12 +30,14 @@ export class CategoryComponent implements OnInit, OnDestroy {
   public categoryFound: boolean = true;
   public quizzesFound: boolean = true;
   constructor(
+    public authService: AuthService,
     private route: ActivatedRoute,
     public router: Router,
     private categoryService: CategoryService,
     private quizService: QuizService,
     private userService: UsersService,
-    private clipboardService: ClipboardService
+    private clipboardService: ClipboardService,
+    public dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -103,12 +107,34 @@ export class CategoryComponent implements OnInit, OnDestroy {
       return text;
     }
   }
+  editQuiz(quiz: QuizModal): void {
+    this.router.navigate(['edit-quiz', quiz.quizID])
+  }
+  deleteQuiz(quiz: QuizModal): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '250px',
+    });
 
+    dialogRef.afterClosed().subscribe(result => {
+      if(result) {
+        if(quiz.quizID) {
+          this.quizService.deleteQuiz(quiz.quizID).then(() => {
+            this.loadMoreQuizzes();
+          });
+        }
+      }
+    });
+  }
   ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
-
+  get isAdmin() {
+    return this.authService.isAdmin;
+  }
+  get isPaid() {
+    return this.authService.isPaid;
+  }
   shareQuiz(id: string) {
     this.clipboardService.copyQuizUrl(id);
   }

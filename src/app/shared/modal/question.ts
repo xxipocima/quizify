@@ -9,6 +9,7 @@
 
 export interface QuestionModal {
   answer: number;
-  options: string[];
+  options: any[];
   question: string;
+  points: number;
 }
