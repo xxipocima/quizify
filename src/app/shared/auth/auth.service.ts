@@ -93,6 +93,15 @@ export class AuthService implements OnInit, OnDestroy{
     return null;
   }
 
+  public getCurrentUserData(){
+    if(this.userData)
+      return this.userData;
+    const currentUser = JSON.parse(localStorage.getItem('user')!);
+    if(currentUser)
+      return currentUser;
+    return null;
+  }
+
   saveUser(userFireStore: any, user: User){
     let username:string = userFireStore['username'];
     const customImage = userFireStore['customImage'];
@@ -119,7 +128,7 @@ export class AuthService implements OnInit, OnDestroy{
     if(results){
       this.userData = {...this.userData, results: results};
     }
-    if(takedQuizId){
+    if(takedQuizId || takedQuizId === ''){
       this.userData = {...this.userData, takedQuizId: takedQuizId};
     }
     if(isPaid){
@@ -181,6 +190,36 @@ export class AuthService implements OnInit, OnDestroy{
     if(user?.attempts)
       attempts = user["attempts"];
     return attempts;
+  }
+  getTakedQuizId(user?: any){
+    if(!user)
+      user = this.userData;
+
+    let takedQuizId = null;
+    if(user?.takedQuizId)
+      takedQuizId = user["takedQuizId"]
+
+    if(takedQuizId){
+      return takedQuizId
+    }
+    if(user?.takedQuizId)
+      takedQuizId = user["takedQuizId"];
+    return takedQuizId;
+  }
+  getResults(user?: any){
+    if(!user)
+      user = this.userData;
+
+    let result = null;
+    if(user?.results)
+      result = user["results"]
+
+    if(result){
+      return result
+    }
+    if(user?.results)
+      result = user["results"];
+    return result;
   }
   CreateUser(user: User | null, email: string, username: string){
     if(user) {

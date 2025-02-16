@@ -1,20 +1,18 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Router} from '@angular/router';
 import {AngularFirestore} from "@angular/fire/compat/firestore";
 
 import {concatMap, map, toArray} from "rxjs/operators";
-import {CategoryModal} from "./modal/category";
 import {QuizModal} from "./modal/quiz";
 
 import {QuestionModal} from "./modal/question";
 import {AuthService} from "./auth/auth.service";
-import {error} from "@angular/compiler-cli/src/transformers/util";
 
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
-import {first, from, switchMap} from "rxjs";
+import {first, from} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -24,8 +22,8 @@ export class QuizService {
 
   questionData: QuestionModal[] = [];
 
-  answers: number[] = []
-  points: number[] = []
+  answers: any[] = []
+  points: any[] = []
   answersTime: any[] = []
   seconds: number = 0;
   timer = null;
@@ -179,8 +177,8 @@ export class QuizService {
   }
 
   totalScore():number {
-      const sum = this.points.reduce((partialSum, a) => partialSum + a, 0);
-      return sum;
+    const parseData = this.points.map(value => JSON.parse(value))
+    return parseData.flat().map(a => +a).filter(a => typeof a === "number" && !isNaN(a)).reduce((a, b) => a + b, 0);
   }
 
   signOut() {

@@ -17,8 +17,8 @@ import {CategoryModal} from "./category";
 export interface ResultModal {
 
   questionData: QuestionModal[];
-  answers: number[];
-  points: number[];
+  answers: any[];
+  points: any[];
   answersTime: any[];
   seconds: number;
   qnProgress: number;

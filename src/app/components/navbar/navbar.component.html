@@ -61,10 +61,11 @@
   </mat-menu>
   <button mat-button *ngIf="isLoggedIn" [matMenuTriggerFor]="userMenu">
     <div matButtonIcon class="profile-image-wrapper">
-    <img
+<!--      getImage() ? getImage() :-->
+      <img
       class="rounded-circle"
       src="{{
-                  getImage() ? getImage() : '/assets/avatars/avatar_00.jpg'
+                  '/assets/avatars/avatar_00.jpg'
                 }}"
       alt="{{ getUsername() }}"
     />

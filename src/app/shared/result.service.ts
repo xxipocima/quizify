@@ -90,14 +90,7 @@ export class ResultService {
     }));
   }
   getResults(resultIDs: string[]) {
-    if(resultIDs == undefined) null;
-    return from(resultIDs).pipe(
-      concatMap(resultID => this.getResultData(resultID)),
-      toArray()
-    );
-  }
-  hasAwarenessResults(resultIDs: string[]) {
-    if(resultIDs == undefined) null;
+    if(resultIDs === undefined || !resultIDs) null;
     return from(resultIDs).pipe(
       concatMap(resultID => this.getResultData(resultID)),
       toArray()

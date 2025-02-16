@@ -1,4 +1,4 @@
-import {Component, OnInit, HostBinding, HostListener} from '@angular/core';
+import {Component, OnInit, HostBinding, HostListener, OnDestroy} from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import {ActivatedRoute, Router} from '@angular/router';
 import { MatRadioChange } from '@angular/material/radio';
@@ -8,23 +8,26 @@ import {QuestionModal} from "../../shared/modal/question";
 import {faArrowLeft} from "@fortawesome/free-solid-svg-icons";
 import { Location } from '@angular/common'
 import {QuizModal} from "../../shared/modal/quiz";
-import {first, switchMap, take} from "rxjs";
+import {first, Subject, switchMap, take} from "rxjs";
 import {AuthService} from "../../shared/auth/auth.service";
 import {ResultService} from "../../shared/result.service";
-import {map} from "rxjs/operators";
+import {map, takeUntil} from "rxjs/operators";
 import {IconName as BootstrapIconName} from "ngx-bootstrap-icons/lib/types/icon-names.type";
 import {CategoryService} from "../../shared/category.service";
 import {ResultModal} from "../../shared/modal/result";
+import {UserModal} from "../../shared/modal/user";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-quiz-by-tag',
   templateUrl: './quiz-by-tag.component.html',
   styleUrls: ['./quiz-by-tag.component.sass']
 })
-export class QuizByTagComponent implements OnInit {
+export class QuizByTagComponent implements OnInit, OnDestroy {
 
   faArrowLeft = faArrowLeft;
-  public quizzes: (QuizModal | null)[] = [];
+  questions: (QuestionModal | null | QuestionModal[])[] = [];
+  private unsubscribe$ = new Subject<void>();
   public quizzesIDs: string[] = [];
   public selectedAnswer: number = 0;
   public isLoading: Boolean = false;
@@ -33,9 +36,14 @@ export class QuizByTagComponent implements OnInit {
   public categoryFound: boolean = true;
   public isQuizNotFound = false;
   public userAttempts: number = 0;
+  public userTakedQuizId: string = "";
+  public userResults: string[] = [];
+  public arrayAnswers: any[] = [];
+  public arrayPoints: any[] = [];
   public quizzesFound: boolean = true;
 
   constructor(
+    private snackBar: MatSnackBar,
     private route: ActivatedRoute,
     public quizService: QuizService,
     public UsersService: UsersService,
@@ -48,18 +56,52 @@ export class QuizByTagComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoading = true;
-    if(!this.authService.getUserID()){
+    const userId = this.authService.getUserID()
+    if(!userId){
       this.router.navigate(['sign-in']);
       return;
     }
-    const currentUser = JSON.parse(localStorage.getItem('user')!);
-    this.userAttempts = this.authService.getAttempts(currentUser)
+    const currentUser = this.authService.getCurrentUserData();
+
+    this.userAttempts = this.authService.getAttempts(currentUser);
+    this.userResults = this.authService.getResults(currentUser);
+    this.userTakedQuizId = this.authService.getTakedQuizId(currentUser);
+    this.resultService.getResults(this.userResults).pipe(take(1))
+      .subscribe(
+        (results: (ResultModal | null)[]) => {
+          if(results) {
+            this.route.params.subscribe(params => {
+              results.forEach(result => {
+                if(result?.categoryName === 'awareness' && params['id'] === 'awareness' && this.userTakedQuizId === ''){
+                  this.router.navigate(['package']);
+                  return;
+                }
+              });
+            });
+          }
+        }
+      );
+
+    this.route.params.subscribe(params => {
+      if (params['id'] === 'knowledge' && !this.isPaid){
+        this.router.navigate(['package']);
+        return;
+      }
+      if (params['id'] === 'skills' && !this.isPaid){
+        this.router.navigate(['package']);
+        return;
+      }
+    });
+
     if(this.userAttempts <= 0){
       this.router.navigate(['package']);
       return;
     }
 
+    console.log('currentUser.takedQuizId', currentUser)
+    console.log('currentUser.takedQuizId', currentUser.takedQuizId)
     if (currentUser.takedQuizId === '') {
+
       this.resultService.createResult({
         questionData: [],
         answers: [],
@@ -73,10 +115,11 @@ export class QuizByTagComponent implements OnInit {
         userId: '',
         categoryName: '',
       }).then(res => {
+        console.log('resultService',res)
         this.authService.UpdateUserTakedQuiz(res);
         this.resultID = res;
         }
-      )
+      );
 
     this.route.params.pipe(
       map(params => params['id']),
@@ -114,6 +157,8 @@ export class QuizByTagComponent implements OnInit {
             this.isQuizNotFound=true;
             return;
           }
+          //@ts-ignore
+          this.resultID = result.resultID;
           this.quizService.questionData = result.questionData;
           this.quizService.answers = result.answers;
           this.quizService.points = result.points;
@@ -129,7 +174,6 @@ export class QuizByTagComponent implements OnInit {
         }
       );
     }
-
   }
 
   public get valueAsStyle(): any {
@@ -155,31 +199,33 @@ export class QuizByTagComponent implements OnInit {
   getQuizzesQuestions(quizIDs: string[]) {
   //  this.quizService.sendData()
 
-    this.quizService.getQuizzesQuestions(quizIDs).pipe(first()).subscribe(
-      res => {
-
-        let questions: QuestionModal[] = [];
-        for (let i = 0; i < res.length; i++) {
-          // @ts-ignore
-          questions += res[i];
-        }
+    this.quizService.getQuizzesQuestions(quizIDs).pipe(takeUntil(this.unsubscribe$)).subscribe(
+      questions => {
         if(!questions)
         {
-          this.isQuizNotFound=true;
+          this.isQuizNotFound = true;
           this.isLoading = false;
           return;
         }
+        if(questions){
+          questions.forEach(question => {
+            // @ts-ignore
+            question.forEach(item => {
+              this.questions.push(item)
+            });
+          });
 
-        this.quizService.questionData = questions;
-        this.startTimer();
-        this.saveResultsAtTimer();
-        this.isLoading = false;
+          this.quizService.questionData = this.questions as QuestionModal[];
+          this.startTimer();
+          this.saveResultsAtTimer();
+          this.isLoading = false;
+        }
       }
     );
   }
   saveResults(){
-    this.isLoading = true;
-    this.resultService.updateResult(this.quizService.resultID, {
+    console.log('this.quizService.answers',this.quizService.answers);
+    this.resultService.updateResult(this.resultID, {
       questionData: this.quizService.questionData,
       answers: this.quizService.answers,
       points: this.quizService.points,
@@ -192,7 +238,7 @@ export class QuizByTagComponent implements OnInit {
       userId: '',
       categoryName: this.quizService.tagId,
     }).then(res => {
-        this.isLoading = false;
+      return res;
       }
     )
   }
@@ -213,10 +259,28 @@ export class QuizByTagComponent implements OnInit {
     }, 1000)
   }
 
-  selectAnswer(id: any, points: any){
-    this.quizService.answers[this.quizService.qnProgress] = id;
+  answerChecked(id: any, points: any, isChecked: boolean){
+    if (isChecked){
+      this.arrayAnswers.push(id);
+      this.arrayPoints.push(points);
+    } else {
+      this.arrayAnswers.splice(this.arrayAnswers.indexOf(id), 1);
+      this.arrayPoints.splice(this.arrayPoints.indexOf(id), 1);
+    }
+  }
+
+  selectAnswer(){
+    if (this.arrayAnswers.length <= 0){
+      this.snackBar.open('Minimum one answer need to be chosen!', "OK", {
+        duration: 5000
+      });
+      return;
+    }
+    this.quizService.answers[this.quizService.qnProgress] = JSON.stringify(this.arrayAnswers);
+    this.arrayAnswers = [];
+    this.quizService.points[this.quizService.qnProgress] = JSON.stringify(this.arrayPoints);
+    this.arrayPoints = [];
     this.quizService.answersTime[this.quizService.qnProgress] = this.quizService.displayTimeElapsed();
-    this.quizService.points[this.quizService.qnProgress] = points;
     this.quizService.qnProgress++;
     this.saveResults();
     if (this.quizService.questionData.length == this.quizService.qnProgress) {
@@ -235,5 +299,12 @@ export class QuizByTagComponent implements OnInit {
   }
   get isPaid() {
     return this.authService.isPaid;
+  }
+
+  ngOnDestroy(): void {
+    // @ts-ignore
+    clearInterval(this.quizService.timer);
+    // @ts-ignore
+    clearInterval(this.quizService.saveResults);
   }
 }

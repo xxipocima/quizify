@@ -14,6 +14,7 @@ export class ResultComponent implements OnInit {
 
   userDetails: any;
   isSubmitted: boolean = false;
+  resultAnswes: any;
 
   constructor(public quizService: QuizService, private router: Router, private _snackBar: MatSnackBar) { }
 
@@ -21,6 +22,7 @@ export class ResultComponent implements OnInit {
     if(this.quizService.questionData.length === 0)
       this.router.navigate([""]);
     this.quizService.correctAnsCount = 0;
+    this.resultAnswes = this.quizService.answers.map(value => JSON.parse(value))
     this.getAnswers();
   }
 
@@ -28,9 +30,9 @@ export class ResultComponent implements OnInit {
     if (this.quizService.questionData) {
       this.quizService.questionData.filter((question, i)=> {
 
-        if (question.answer === this.quizService.answers[i]) {
+        // if (question.answer === this.quizService.answers[i]) {
           this.quizService.correctAnsCount++;
-        }
+        // }
       })
     }
   }

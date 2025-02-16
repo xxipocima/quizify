@@ -50,10 +50,12 @@
         </mat-card-header>
         <mat-card-content *ngIf="quizService.questionData[quizService.qnProgress].options.length">
           <div class="option-buttons-container">
-          <button mat-flat-button color="primary" *ngFor="let option of quizService.questionData[quizService.qnProgress].options let i = index"
-                  [value]="option.points" (click)="selectAnswer(i, option.points)">{{option.option}}</button>
+          <mat-checkbox color="primary" #check *ngFor="let option of quizService.questionData[quizService.qnProgress].options let i = index" (change)="answerChecked(i, option.points, check.checked)">
+            {{option.option}}
+          </mat-checkbox>
           </div>
-
+          <mat-divider style="margin-bottom: 20px"></mat-divider>
+          <button mat-flat-button color="primary" (click)="selectAnswer()"> Next -></button>
         </mat-card-content>
 
     </mat-card>
