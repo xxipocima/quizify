@@ -1,0 +1,33 @@
+<div class="carousel-container">
+  <div class="carousel-items">
+    <mat-card  *ngFor="let item of items" [style.width.px]="itemWidth"  [style.min-width.px]="itemWidth" [style.height.px]="itemHeight">
+      <mat-card-content class="carousel-item" (click)="navigate(item.id)" >
+        <div class="iconFrame">
+          <div class="iconWrapper">
+            <img src="assets/01.webp">
+          </div>
+        </div>
+        <mat-card-header>
+          <mat-card-title-group>
+          <mat-card-title>{{ item.name }}</mat-card-title>
+          <mat-card-subtitle>{{item.count}} {{ item.count == 1 ? "test collection" : "test collections" }} </mat-card-subtitle>
+
+          </mat-card-title-group>
+        </mat-card-header>
+        <mat-card-footer>
+          <button mat-flat-button color="accent" (click)="navigate(item.id)">
+            {{ 'CARUSEL_BUTTON' | translate}}
+          </button>
+        </mat-card-footer>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <button mat-icon-button class="carousel-button previous" (click)="move('previous')">
+    <i-bs  name="chevron-left" ></i-bs>
+  </button>
+  <button mat-icon-button class="carousel-button next" (click)="move('next')">
+    <i-bs name="chevron-right" ></i-bs>
+  </button>
+</div>
+
+

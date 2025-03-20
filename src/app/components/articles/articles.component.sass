@@ -1,0 +1,89 @@
+@import "../../../assets/styles/variables"
+@import "../../../assets/styles"
+mat-grid-tile
+  background: lightblue
+.circle
+  border-radius: 50%
+  width: 50px
+  height: 50px
+  background-color: red
+  display: inline-block
+  position: absolute
+  .big
+    width: 150px
+    height: 150px
+    background-color: blue
+    margin: 100px
+    text-align: center
+    vertical-align: middle
+
+.home-container
+  margin-inline: 40px
+  min-height: 90%
+  @media #{$xl-layout}
+    margin-inline:  100px
+  @media #{$lg-layout}
+    margin-inline:  80px
+  @media #{$md-layout}
+    margin-inline:  50px
+
+.spinner
+  width: 100%
+  height: 100%
+  display: flex
+  justify-content: center
+  align-items: center
+  text-align: center
+  mat-spinner
+    margin: auto
+
+.submit-wrapper
+  width: 100%
+  text-align: center
+  button
+    font-size: 20px
+    padding-block: 30px
+mat-card
+  padding: 0
+  margin-inline: 5px
+  margin-block: 15px
+  text-align: center
+  justify-content: center
+  align-items: center
+  background-color: transparent
+  border: 1px solid #ffe2d6
+  mat-card-header
+    .quiz-title
+      text-wrap: nowrap
+      font-size: 25px
+      color: #514033
+      font-weight: 500
+  mat-card-content
+    padding: 5px 20px
+    width: 100%
+    margin: 10px
+    text-align: center
+    justify-content: center
+    align-items: center
+    button
+      margin: 5px
+    .quiz-description
+      text-align: left
+      color: grey
+    .madeBy
+      margin-top: 10px
+      text-align: left
+      color: grey
+
+.button-start
+  border: 1px solid #514039
+  border-radius: 0
+  margin-top: 75px
+  color: #fff !important
+  background-color: #514039 !important
+  &:hover
+    color: #514039 !important
+    @include transition(color)
+    background-color: transparent !important
+    @include transition(background-color)
+    text-decoration: underline

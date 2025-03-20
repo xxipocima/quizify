@@ -1,0 +1,95 @@
+@import "../../../assets/styles"
+
+.carousel-items
+  mat-card
+    background-color: #fffbf4
+    border: 1px solid
+    //padding: 10px
+    text-align: center
+    //justify-content: center
+    align-items: center
+
+    overflow: hidden
+    mat-card-content
+      margin: 0 10px
+      text-align: center
+      justify-content: center
+      align-items: center
+      mat-card-header
+        text-align: left
+        padding: 25px 0
+        border-bottom: 1px solid
+        mat-card-title-group
+          //justify-content: center
+          align-items: center
+          mat-card-title
+            text-wrap: nowrap
+            font-size: 20px
+            //color: $primary-dark
+            color: #514033
+            font-weight: 700
+          mat-card-subtitle
+            //color: $primary
+            color: #514033
+            font-size: 14px
+      mat-card-footer
+        float: left
+        button
+          border: 1px solid #514039
+          border-radius: 0
+          margin-top: 75px
+          background-color: #514039
+          &:hover
+            color: #514039
+            @include transition(color)
+            background-color: transparent
+            @include transition(background-color)
+            text-decoration: underline
+
+      .iconFrame
+        background-color: white
+        height: min-content
+        //width: min-content
+        //margin-block: 10px
+        margin-inline: auto
+        //padding: 13px
+        //border-radius: 20px
+        aspect-ratio: 1
+        text-align: center
+        justify-content: center
+        align-items: center
+        @include transition(background-color)
+        transform: scale(100%)
+        @include transition(transform)
+        .iconWrapper
+          //height: 30px
+          //width: 30px
+          transform: rotate(0) scale(100%)
+          @include transition(transform)
+          background: transparent
+          fa-icon, i-bs
+            color: $primary
+            transform: rotate(45deg)
+    //&:hover
+    //  background-color: #000000
+    //  cursor: pointer
+    //  mat-card-content
+    //    .iconFrame
+    //      transform: scale(102%)
+    //      background-color: #ffffff
+    //      @include transition(background-color)
+    //      .iconWrapper
+    //
+    //        transform: rotate(10deg) scale(110%)
+    //        fa-icon, i-bs
+    //          color: white
+    //          @include transition(color)
+    //    mat-card-header
+    //      mat-card-title-group
+    //        mat-card-title, mat-card-subtitle
+    //          color: white
+    //          @include transition(color)
+    //        mat-card-subtitle
+    //          color: white
+
+
