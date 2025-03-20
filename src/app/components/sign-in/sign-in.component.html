@@ -39,14 +39,14 @@
       <div class="items-right">
       <a *ngIf="!isRegister" class="text-link text-align-right" href="#" (click)="router.navigate(['./sign-in/forgot']); $event.preventDefault()">Forgot password?</a>
       </div>
-      <div class="line-wrapper">
-        <hr>
-        <span class="or-text">or</span>
-        <hr>
-      </div>
-      <button mat-stroked-button type="button" class="login-with-google-btn" (click)="authService.GoogleAuth()">
-        <p class="btn-text"> <i class="google-icon-wrapper"></i>Sign in with Google</p>
-      </button>
+<!--      <div class="line-wrapper">-->
+<!--        <hr>-->
+<!--        <span class="or-text">or</span>-->
+<!--        <hr>-->
+<!--      </div>-->
+<!--      <button mat-stroked-button type="button" class="login-with-google-btn" (click)="authService.GoogleAuth()">-->
+<!--        <p class="btn-text"> <i class="google-icon-wrapper"></i>Sign in with Google</p>-->
+<!--      </button>-->
       <div style="padding: 5px"></div>
       <p *ngIf="!isRegister">Don't you have an account? <a class="text-link" href="#" (click)="isRegister=true; $event.preventDefault()">Sign Up</a></p>
       <p *ngIf="isRegister">Already have an account? <a class="text-link" href="#" (click)="isRegister=false; $event.preventDefault()">Sign In</a></p>

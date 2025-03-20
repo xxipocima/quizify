@@ -35,6 +35,10 @@
     <textarea matInput formControlName="description"></textarea>
   </mat-form-field>
   <mat-form-field appearance="fill" class="quiz-form__field">
+    <mat-label>Recommendations</mat-label>
+    <textarea matInput formControlName="recommendations"></textarea>
+  </mat-form-field>
+  <mat-form-field appearance="fill" class="quiz-form__field">
     <mat-label>Category</mat-label>
     <input type="text" matInput formControlName="categoryDisplay" [matAutocomplete]="auto" (keyup.enter)="checkCategory()" (blur)="checkCategory()"  required/>
     <button mat-icon-button matSuffix *ngIf="quizForm.controls['categoryDisplay'].value" aria-label="Clear" (click)="quizForm.controls['categoryDisplay'].setValue('')">

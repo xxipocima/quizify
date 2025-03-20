@@ -5,9 +5,7 @@ import {AngularFirestore} from "@angular/fire/compat/firestore";
 
 import {concatMap, map, toArray} from "rxjs/operators";
 import {CategoryModal} from "./modal/category";
-import {QuizModal} from "./modal/quiz";
 
-import {QuestionModal} from "./modal/question";
 import {from, of} from "rxjs";
 import {AuthService} from "./auth/auth.service";
 
@@ -23,6 +21,7 @@ export class CategoryService {
   constructor(
     private http: HttpClient,
     private fireStore: AngularFirestore,
+    private authService: AuthService,
     public router: Router
   ) {}
 
@@ -62,7 +61,7 @@ export class CategoryService {
   getCategoriesByIDs(ids: string[]){
     if(ids == undefined) null;
     return from(ids).pipe(
-      concatMap(quizID => this.getCategory(quizID)),
+      concatMap(categoryID => this.getCategory(categoryID)),
       toArray()
     );
   }

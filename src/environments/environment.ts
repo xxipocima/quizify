@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  baseHref: '',
+  baseHref: '/',
   firebase: {
     apiKey: "AIzaSyBtcgM_2kDXHqCHmCGKCqNW-CCKUbUR1G8",
     authDomain: "multiple-choice-question-7cd57.firebaseapp.com",

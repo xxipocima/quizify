@@ -4,30 +4,80 @@
   <mat-spinner></mat-spinner>
 </div>
 <div class="home-container">
-<div style="padding: 60px"></div>
-  <div class="submit-wrapper">
-    <button mat-flat-button color="accent" (click)="this.router.navigate(['test/awareness'])">
-      <i-bs width="50" height="50" name="check2-circle"></i-bs>
-      Start new Test!
-    </button>
-    <div style="padding: 20px"></div>
-    <button mat-flat-button color="primary" (click)="this.router.navigate(['test/knowledge'])">
-      <i-bs width="50" height="50" name="check2-circle"></i-bs>
-      Start new Knowledge Test!
-    </button>
-    <div style="padding: 20px"></div>
-    <button mat-stroked-button (click)="this.router.navigate(['test/skills'])">
-      <i-bs width="50" height="50" name="check2-circle"></i-bs>
-      Start new Skills Test!
-    </button>
+  <div style="padding: 60px"></div>
+  <div style="display:flex; border-bottom: 1px solid;color: #514033;padding-bottom: 30px">
+    <h1 class="font_2">
+      {{ 'TITLE-P1' | translate}}</h1>
+    <h4 class="font_4">
+      {{ 'TITLE-P2' | translate}}</h4>
   </div>
+  <div style="padding: 30px"></div>
 
   <main *ngIf="!isLoading">
-  <app-carousel-slides [items]="promoQuizzes"></app-carousel-slides>
+    <mat-grid-list cols="3" rowHeight="1:1">
+      <mat-grid-tile class="circle big" (click)="this.link()"
+                     style="
+                     background-size: 110% 100%;
+                     background-image: url('/assets/7ed6e4_03eed9d8f29c43b9abde6c2cf79fa000~mv2.webp');
+">
 
-  <div style="padding: 20px"></div>
-<!--  <h3 *ngIf="isAdmin">Tags</h3>-->
-<!--<app-carousel-category *ngIf="isAdmin" [items]="categories"></app-carousel-category>-->
+      </mat-grid-tile>
+      <mat-grid-tile class="circle big" (click)="this.router.navigate(['services'])"
+                     style="
+                     background-size: cover;
+                     background-image: url('/assets/7ed6e4_6c7ad7f05af54622b418a9f760021ad5~mv2.webp');
+">
+
+      </mat-grid-tile>
+      <mat-grid-tile class="circle big" (click)="this.router.navigate(['services'])"
+                     style="
+                     background-size: cover;
+                     background-image: url('/assets/7ed6e4_e36fd208cb2342049747e1f6ab7cdcd4~mv2.webp');
+">
+
+      </mat-grid-tile>
+    </mat-grid-list>
+    <section class="comp">
+      <div style="padding: 20px"></div>
+      <h1 class="font_0">{{ 'DESCRIPTION-TITLE' | translate}}</h1>
+      <div style="padding: 20px"></div>
+      <div class="items">
+        <div class="left-text">
+          <h4 class="font_4">{{ 'DESCRIPTION-1' | translate}}</h4>
+          <p>{{ 'DESCRIPTION-2' | translate}}</p>
+        </div>
+        <div class="center-text">
+          <p>{{ 'DESCRIPTION-3' | translate}}</p>
+          <p>{{ 'DESCRIPTION-4' | translate}}</p>
+          <p>{{ 'DESCRIPTION-5' | translate}}</p>
+          <p>{{ 'DESCRIPTION-6' | translate}}</p>
+        </div>
+        <div class="right-text">
+          <h4 class="font_4">{{ 'DESCRIPTION-7' | translate}}</h4>
+          <p>{{ 'DESCRIPTION-8' | translate}}</p>
+          <p>{{ 'DESCRIPTION-9' | translate}}</p>
+        </div>
+      </div>
+      <div style="padding: 20px"></div>
+</section>
+
+
+    <div style="padding: 60px"></div>
+    <h2 class="font_1"><span>
+    {{ 'ARTICLE-TITLE' | translate}}</span></h2>
+    <div style="padding: 40px;margin-top: 60px;border-top: 1px solid;"></div>
+    <app-carousel-blog [items]="articles"></app-carousel-blog>
+    <div style="display:flex;">
+    <h2 class="font_1" style="flex-grow: 3;"><span>
+    {{ 'SERVICES-P1' | translate}}</span></h2>
+    <h2 class="font_1" style="flex-grow: 1;"><span>
+    {{ 'SERVICES-P2' | translate}}</span></h2>
+    </div>
+    <app-carousel-category [items]="categories"></app-carousel-category>
+
+    <div style="padding: 20px"></div>
+    <!--  <h3 *ngIf="isAdmin">Tags</h3>-->
+    <!--<app-carousel-category *ngIf="isAdmin" [items]="categories"></app-carousel-category>-->
   </main>
 </div>
 <app-footer *ngIf="!isLoading"></app-footer>

@@ -1,13 +1,17 @@
-
+@import "../../../assets/styles"
 .container
   display: block
   justify-content: center
   align-items: center
-  width: 100%
+  width: 52%
+  height: 100%
   overflow-y: auto
-  margin: 0
+  margin: 0 auto
   padding-top: 50px
   max-width: unset
+  color: #514033
+  background-color: transparent
+  border: 1px solid #ffe2d6
   .spinner
     text-align: center
     justify-content: center
@@ -28,6 +32,7 @@
     margin-block: 50px
     margin-inline: 20px
     text-align: center
+    background-color: transparent
     mat-card-title
       font-size: 30px
       font-weight: 500
@@ -99,3 +104,15 @@
   button
     font-size: 20px
     padding-block: 20px
+.button-start
+  border: 1px solid #514039
+  border-radius: 0
+  margin-top: 75px
+  color: #fff !important
+  background-color: #514039 !important
+  &:hover
+    color: #514039 !important
+    @include transition(color)
+    background-color: transparent !important
+    @include transition(background-color)
+    text-decoration: underline

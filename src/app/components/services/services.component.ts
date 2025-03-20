@@ -4,70 +4,85 @@ import {CarouselItem} from "../../shared/utils/carousel-item.interface";
 
 import {IconName as BootstrapIconName, IconNamesEnum} from 'ngx-bootstrap-icons';
 import {PromoQuizModal} from "../../shared/modal/promoQuiz";
-import {take} from "rxjs";
+import {Subject, take} from "rxjs";
 import {CategoryModal} from "../../shared/modal/category";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {FormBuilder} from "@angular/forms";
 import {CategoryService} from "../../shared/category.service";
 import {QuizService} from "../../shared/quiz.service";
 import {AuthService} from "../../shared/auth/auth.service";
+import {takeUntil} from "rxjs/operators";
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.sass']
+  selector: 'app-services',
+  templateUrl: './services.component.html',
+  styleUrls: ['./services.component.sass']
 })
-export class HomeComponent implements OnInit{
+export class ServicesComponent implements OnInit{
+  public categories: (CategoryModal | undefined)[] = [];
+  public categoriesIDs: string[] = [];
+  public categoriesFound: boolean = true;
+  public pageSize: number = 10;
+  public currentPage: number = 1;
+  private currentIndex: number = 0;
+  private unsubscribe$ = new Subject<void>();
   constructor(
     private authService: AuthService,
-    private categoryService: CategoryService,
     public router: Router,
-    private quizService: QuizService
+    private route: ActivatedRoute,
+    private categoryService: CategoryService
   ) { }
 
+
   isLoading: Boolean = false;
-
-  categories: CarouselItem[] = [];
-
-  promoQuizzes: PromoQuizModal[] = [];
-  iconNames = IconNamesEnum;
+  isServices: Boolean = false;
+  isFreeTest: Boolean = false;
 
   ngOnInit() {
     this.isLoading = true;
+
+    this.route.data.subscribe(data => {
+      if (data['name'] === 'services'){
+        this.isServices = true;
+        this.getCategories();
+      } else {
+        this.isFreeTest = true;
+      }
+    });
+
+    this.isLoading = false;
+  }
+  getCategories() {
     this.categoryService.getCategories().pipe(take(1)).subscribe((categoryModals: CategoryModal[]) => {
       for (const category of categoryModals) {
-
-        const prefix = 'fal';
-
-        const iconName = category.icon as IconName;
-
-        let iconDefinition = findIconDefinition({prefix, iconName});
-
-        this.categories.push(
-          {
-            name: category.name,
-            icon: iconDefinition,
-            bootstrapIconName: category.icon as BootstrapIconName,
-            count: category.quizzes ? category.quizzes.length : 0,
-            id: category.id
-          }
-        )
-
-        if (category.promoQuiz) {
-          const promoQuiz = {
-            ...category.promoQuiz,
-            category: category.name,
-            categoryIcon: category.icon as BootstrapIconName
-          } as PromoQuizModal
-
-          this.promoQuizzes.push(promoQuiz)
-        }
+        this.categoriesIDs.push(category.id);
       }
-      this.isLoading = false;
+      if (this.categoriesIDs.length === 0) {
+        this.categoriesFound = false;
+      } else {
+        this.loadMoreCategories();
+      }
     });
   }
-  link(){
-    location.href = 'https://edsm7c.com/';
+
+  loadMoreCategories(): void {
+    const categorySubset = this.categoriesIDs.slice(this.currentIndex, this.currentIndex + this.pageSize);
+    this.categoryService.getCategoriesByIDs(categorySubset)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(categories => {
+        if(!categories)
+          return;
+        this.categories = [...this.categories, ...categories];
+        console.log('cat', this.categories)
+        this.currentIndex += this.pageSize;
+      });
+  }
+  pageCategoriesChange(newPage: number): void {
+    this.currentPage = newPage;
+    this.loadMoreCategories();
+  }
+  navigate(categoryId: string){
+    this.router.navigate(["tag", categoryId])
   }
   get isAdmin() {
     return this.authService.isAdmin;

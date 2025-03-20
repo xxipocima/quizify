@@ -1,23 +1,22 @@
 <app-navbar></app-navbar>
 
-<div class="container dark-background">
+<div class="container-category">
   <div class="spinner" *ngIf="!category && !noCategory">
     <mat-spinner></mat-spinner>
   </div>
-
   <div class="category-container">
     <ng-container *ngIf="category && categoryFound; else noCategory">
 
       <div class="iconFrame">
         <div class="iconWrapper">
-          <i-bs width="50" height="50" *ngIf="icon" [name]="icon"></i-bs>
+          <img src="assets/01.webp">
         </div>
       </div>
 
-      <h2>{{category.name}}</h2>
+      <h2>{{ category.id + '.name' | translate}}</h2>
 
-      <h5>Questions: {{category.quizzes ? category.quizzes.length : 0}}</h5>
-      <ng-container *ngIf="quizzesFound; else noQuizzes">
+<!--      <h5>Questions: {{category.quizzes ? category.quizzes.length : 0}}</h5>-->
+      <ng-container *ngIf="quizzesFound && isAdmin; else noQuizzes">
         <div class="row quiz-row">
           <div class="col-md-6" *ngFor="let quiz of quizzes">
             <div *ngIf="quiz">
@@ -56,7 +55,12 @@
       </ng-container>
 
       <ng-template #noQuizzes>
-        <p>No quizzes found in this category.</p>
+                <p>{{ category.id + '.description' | translate}}</p>
+        <button mat-flat-button class="button-start" (click)="this.router.navigate(['test/' + category.id])">
+        <i-bs width="25" height="25" name="check2-circle"></i-bs>
+          {{ 'START' | translate}}
+      </button>
+<!--        <p>No quizzes found in this category.</p>-->
       </ng-template>
     </ng-container>
 

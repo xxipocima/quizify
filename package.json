@@ -1,5 +1,5 @@
 {
-  "name": "Mindcodia",
+  "name": "mindcodia",
   "homepage": "/",
   "version": "1.0.0",
   "scripts": {
@@ -27,6 +27,8 @@
     "@fortawesome/free-regular-svg-icons": "^6.2.1",
     "@fortawesome/free-solid-svg-icons": "^6.2.1",
     "@ng-bootstrap/ng-bootstrap": "^14.1.1",
+    "@ngx-translate/core": "^14.0.0",
+    "@ngx-translate/http-loader": "^6.0.0",
     "@popperjs/core": "^2.11.6",
     "bootstrap": "^5.2.3",
     "firebase": "^9.21.0",

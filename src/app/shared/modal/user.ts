@@ -1,4 +1,3 @@
-import {ResultModal} from "./result";
 
 export class UserModal {
   constructor(
@@ -7,11 +6,12 @@ export class UserModal {
     public uid: string,
     public image: string,
     public quizzes: string[],
-    public customImage?: string,
-    public takedQuizId?: string,
-    public results?: ResultModal[],
-    public attempts?: number,
+    public results?: string[],
+    public articles?: string[],
     public isAdmin?: boolean,
-    public isPaid?: boolean
+    public isPaid?: boolean,
+    public attempts?: number,
+    public takedQuizId?: string,
+    public customImage?: string,
   ) { }
 }

@@ -1,15 +1,27 @@
-
-
+@import "../../../assets/styles/variables"
+.logo
+  display: block
+  font-size: 30px
+  text-decoration: none
+  color: #514033
+  margin-right: 30px
+.hide-on-mobile
+  @media #{$small-mobile}, #{$large-mobile}, #{$xxl-mobile}
+    display: none
+.hide-on-desktop
+  @media #{$desktop-device}
+    display: none
 mat-toolbar
   position: fixed
   z-index: 999
   width: 100%
   padding: 35px 20px
+  background-color: #fffbf4!important
   .fill-remaining-space
     flex: 1 1 auto
     display: flex
     align-items: center
-    color: #90cbf9!important
+    color: #000!important
 
     .nav-logo
       max-width: 100%
@@ -24,6 +36,7 @@ mat-toolbar
     font-size: 16px
     font-weight: 500
     font-weight: 500
+    color: #000!important
     border-radius: 8px
   .profile-image-wrapper
     aspect-ratio: 1

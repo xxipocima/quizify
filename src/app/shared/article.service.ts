@@ -2,22 +2,19 @@ import {AuthService} from "./auth/auth.service";
 import {Router} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Injectable} from "@angular/core";
-import { environment} from "../../environments/environment";
-import {CategoryModal} from "./modal/category";
 import {concatMap, map, toArray} from "rxjs/operators";
 import {from, of} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {AngularFirestore} from "@angular/fire/compat/firestore";
-import {ResultModal} from "./modal/result";
-import {QuizModal} from "./modal/quiz";
+import {ArticleModal} from "./modal/article";
+import {CategoryModal} from "./modal/category";
 
 @Injectable({
   providedIn: 'root'
 })
 
-export class ResultService {
-
-  resultsData: ResultModal[] = [];
+export class ArticleService {
+  articlesData: ArticleModal[] = [];
   constructor(
     private snackBar: MatSnackBar,
     private http: HttpClient,
@@ -25,40 +22,38 @@ export class ResultService {
     private fireStore: AngularFirestore,
     public router: Router
   ) {}
-  async addResultToCollection(collectionId: string, resultId: string, collection: string): Promise<void> {
+  async addArticleToCollection(collectionId: string, articleId: string, collection: string): Promise<void> {
     const userRef = this.fireStore.collection(collection).doc(collectionId).ref;
 
     try {
-      // Get the current 'quizzes' array from the category document
       const doc = await userRef.get();
 
       if (!doc.exists) {
         console.log('No such document!');
       } else {
-        // If the 'quizzes' array exists, add the new quizId, otherwise create a new array with quizId
         // @ts-ignore
-        const results = doc.data()?.results ?? [];
-        results.push(resultId);
+        const articles = doc.data()?.articles ?? [];
+        articles.push(articleId);
 
-        return userRef.update({ results });
+        return userRef.update({ articles });
       }
     } catch (error) {
       console.log('Error getting document:', error);
     }
   }
 
-  async createResult(data: ResultModal) : Promise<string> {
+  async createArticle(data: ArticleModal) : Promise<string> {
 
     if(this.authService.user)
       data = {...data, userId: this.authService.user.uid}
     else
       data = {...data, userId: this.authService.userData.uid}
 
-    return this.fireStore.collection('result').add(data).then(res =>{
+    return this.fireStore.collection('articles').add(data).then(res =>{
       if(res.id)
       {
-        //add Result to users collection
-        this.addResultToCollection(data.userId, res.id, "users");
+        //add Article to users collection
+        this.addArticleToCollection(data.userId, res.id, "users");
         return res.id
       }
       return '';
@@ -67,32 +62,44 @@ export class ResultService {
     })
 
   }
-  updateResult(resultId: string, data: ResultModal): Promise<void> {
+  updateArticle(articleId: string, data: ArticleModal): Promise<void> {
     if(this.authService.user)
       data = {...data, userId: this.authService.user.uid}
     else
       data = {...data, userId: this.authService.userData.uid}
-    return this.fireStore.collection('result').doc(resultId).update(data).then(() => {
-      console.log(`Result with ID: ${resultId} updated successfully.`);
+    return this.fireStore.collection('articles').doc(articleId).update(data).then(() => {
+      console.log(`Article with ID: ${articleId} updated successfully.`);
     }, error => {
-      console.error('Error while updating Result: ', error);
+      console.error('Error while updating Article: ', error);
     });
   }
-  getResultData(resultID: string) {
-    return this.fireStore.collection('result').doc(resultID).get().pipe(map(res => {
+  getArticleData(articleID: string) {
+    return this.fireStore.collection('articles').doc(articleID).get().pipe(map(res => {
       if (res.exists && res.data()) {
-        const resultData = res.data() as ResultModal;
-        resultData.resultID = resultID;
-        return resultData;
+        const articleData = res.data() as ArticleModal;
+        articleData.id = articleID;
+        return articleData;
       } else {
         return null;
       }
     }));
   }
-  getResults(resultIDs: string[]) {
-    if(resultIDs === undefined || !resultIDs) null;
-    return from(resultIDs).pipe(
-      concatMap(resultID => this.getResultData(resultID)),
+  getArticles() {
+    if (this.articlesData.length>0) {
+      return of(this.articlesData);
+    } else {
+      return this.fireStore.collection('articles').get().pipe(
+        map(res => {
+          this.articlesData = res.docs.map(doc => doc.data()) as ArticleModal[];
+          return this.articlesData;
+        })
+      );
+    }
+  }
+  getArticlesByIDs(articleIDs: string[]) {
+    if(articleIDs === undefined || !articleIDs) null;
+    return from(articleIDs).pipe(
+      concatMap(articleID => this.getArticleData(articleID)),
       toArray()
     );
   }

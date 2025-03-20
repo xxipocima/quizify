@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import {CarouselItem} from "../../shared/utils/carousel-item.interface";
 import {Router} from "@angular/router";
+import {AuthService} from "../../shared/auth/auth.service";
 
 
 @Component({
@@ -13,9 +14,13 @@ export class CarouselComponent implements OnInit {
   @Input() itemWidth = 180;
   @Input() itemHeight = 120;
 
+  public currentLanguage: string = this.authService.getCurrentLang();
+
   private scrollAmount = 0;
 
-  constructor(public router: Router) {}
+  constructor(
+    public authService: AuthService, public router: Router) {}
+
 
   ngOnInit(): void {
     this.scrollAmount = this.itemWidth + 20; // +20 for the margin

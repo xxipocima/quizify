@@ -5,7 +5,7 @@ import { MatRadioChange } from '@angular/material/radio';
 import {QuizService} from "../../shared/quiz.service";
 import {UsersService} from "../../shared/users.service";
 import {QuestionModal} from "../../shared/modal/question";
-import {faArrowLeft} from "@fortawesome/free-solid-svg-icons";
+import {faArrowLeft, faArrowRight} from "@fortawesome/free-solid-svg-icons";
 import { Location } from '@angular/common'
 import {QuizModal} from "../../shared/modal/quiz";
 import {first, Subject, switchMap, take} from "rxjs";
@@ -26,6 +26,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 export class QuizByTagComponent implements OnInit, OnDestroy {
 
   faArrowLeft = faArrowLeft;
+  faArrowRight = faArrowRight;
   questions: (QuestionModal | null | QuestionModal[])[] = [];
   private unsubscribe$ = new Subject<void>();
   public quizzesIDs: string[] = [];
@@ -41,6 +42,8 @@ export class QuizByTagComponent implements OnInit, OnDestroy {
   public arrayAnswers: any[] = [];
   public arrayPoints: any[] = [];
   public quizzesFound: boolean = true;
+  public boyPicture: number = Math.floor(Math.random() * 5) + 1;
+  public girlPicture: number = Math.floor(Math.random() * 5) + 1;
 
   constructor(
     private snackBar: MatSnackBar,
@@ -66,7 +69,7 @@ export class QuizByTagComponent implements OnInit, OnDestroy {
     this.userAttempts = this.authService.getAttempts(currentUser);
     this.userResults = this.authService.getResults(currentUser);
     this.userTakedQuizId = this.authService.getTakedQuizId(currentUser);
-    this.resultService.getResults(this.userResults).pipe(take(1))
+    this.resultService.getResultsById(this.userResults).pipe(take(1))
       .subscribe(
         (results: (ResultModal | null)[]) => {
           if(results) {
@@ -114,8 +117,8 @@ export class QuizByTagComponent implements OnInit, OnDestroy {
         resultID: '',
         userId: '',
         categoryName: '',
+        recommendations: ''
       }).then(res => {
-        console.log('resultService',res)
         this.authService.UpdateUserTakedQuiz(res);
         this.resultID = res;
         }
@@ -168,6 +171,7 @@ export class QuizByTagComponent implements OnInit, OnDestroy {
           this.quizService.correctAnsCount = result.correctAnsCount;
           this.quizService.resultID = currentUser.takedQuizId;
           this.quizService.tagId = result.categoryName;
+          this.quizService.recommendations = result.recommendations;
           this.startTimer();
           this.saveResultsAtTimer();
           this.isLoading = false;
@@ -237,6 +241,8 @@ export class QuizByTagComponent implements OnInit, OnDestroy {
       resultID: this.quizService.resultID,
       userId: '',
       categoryName: this.quizService.tagId,
+      recommendations: this.quizService.recommendations,
+      complete: this.quizService.questionData.length === this.quizService.qnProgress
     }).then(res => {
       return res;
       }
@@ -283,7 +289,9 @@ export class QuizByTagComponent implements OnInit, OnDestroy {
     this.quizService.answersTime[this.quizService.qnProgress] = this.quizService.displayTimeElapsed();
     this.quizService.qnProgress++;
     this.saveResults();
-    if (this.quizService.questionData.length == this.quizService.qnProgress) {
+    this.boyPicture = Math.floor(Math.random() * 5) + 1;
+    this.girlPicture = Math.floor(Math.random() * 5) + 1;
+    if (this.quizService.questionData.length === this.quizService.qnProgress) {
       // @ts-ignore
       clearInterval(this.quizService.timer);
       // @ts-ignore

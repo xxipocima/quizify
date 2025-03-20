@@ -56,9 +56,7 @@ export class SignInComponent implements OnInit {
     if(this.isRegister) {
       if(this.username.value==null) return;
       if(this.username.invalid) return;
-
       submitResult = this.authService.SignUp(this.email.value, this.username.value, this.password.value);
-
     }
     else {
       submitResult =  this.authService.SignIn(this.email.value, this.password.value)

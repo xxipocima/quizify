@@ -1,6 +1,6 @@
 <app-navbar></app-navbar>
 
-<div class="container dark-background">
+<div class="container">
   <div style="margin: 60px"></div>
   <mat-card>
 
@@ -43,18 +43,37 @@
               </div>
             </div>
             <mat-card-content>
-              <button mat-flat-button color="primary" (click)="editUser(user.username)">Edit profile</button>
+              <button mat-flat-button class="button-start" (click)="editUser(user.username)">Edit profile</button>
             </mat-card-content>
             <div style="padding: 20px"></div>
-            <h4>Your results</h4>
             <div class="spinner" *ngIf="isLoading">
               <mat-spinner></mat-spinner>
             </div>
-            <div clas="quizzes" *ngIf="!isLoading">
+            <div clas="results" *ngIf="!isLoading">
+              <h4>Your results</h4>
+              <div *ngIf="results.length==0">
+                no results found
+              </div>
+              <div>
+                <div class="quiz-grid" *ngFor="let result of results">
+                  <div *ngIf="result"  class="quiz-item" >
+                    <div class="quiz-name">{{ result.categoryName }}</div>
+                    <div class="quiz-category">Score: {{ result.score }}</div>
+                    <div class="quiz-actions">
+                      <button (click)="viewResult(result.resultID)" mat-stroked-button type="button" matTooltip="View result">
+                        <i-bs width="20" height="20" name="pencil-square"></i-bs> View
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div clas="quizzes" *ngIf="!isLoading && isAdmin">
+              <h4>Created tests:</h4>
               <div *ngIf="quizzes.length==0">
                 no results found
               </div>
-              <div >
+              <div>
                 <div class="quiz-grid" *ngFor="let quiz of quizzes | slice: (currentPage-1) * pageSize : currentPage * pageSize; let i = index">
                 <div *ngIf="quiz"  class="quiz-item" >
                   <div class="quiz-name">{{ quiz.name }}</div>

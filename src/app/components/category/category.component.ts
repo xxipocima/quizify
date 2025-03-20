@@ -29,6 +29,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
   currentPage: number = 1;
   public categoryFound: boolean = true;
   public quizzesFound: boolean = true;
+  public currentLanguage = this.authService.getCurrentLang();
   constructor(
     public authService: AuthService,
     private route: ActivatedRoute,

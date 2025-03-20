@@ -11,6 +11,8 @@ import {FormBuilder} from "@angular/forms";
 import {CategoryService} from "../../shared/category.service";
 import {QuizService} from "../../shared/quiz.service";
 import {AuthService} from "../../shared/auth/auth.service";
+import {ArticleService} from "../../shared/article.service";
+import {ArticleModal} from "../../shared/modal/article";
 
 @Component({
   selector: 'app-home',
@@ -21,13 +23,15 @@ export class HomeComponent implements OnInit{
   constructor(
     private authService: AuthService,
     private categoryService: CategoryService,
+    private articleService: ArticleService,
     public router: Router,
     private quizService: QuizService
   ) { }
-
+  currentLanguage: string = this.authService.getCurrentLang();
   isLoading: Boolean = false;
 
   categories: CarouselItem[] = [];
+  articles: CarouselItem[] = [];
 
   promoQuizzes: PromoQuizModal[] = [];
   iconNames = IconNamesEnum;
@@ -42,7 +46,6 @@ export class HomeComponent implements OnInit{
         const iconName = category.icon as IconName;
 
         let iconDefinition = findIconDefinition({prefix, iconName});
-
         this.categories.push(
           {
             name: category.name,
@@ -63,8 +66,23 @@ export class HomeComponent implements OnInit{
           this.promoQuizzes.push(promoQuiz)
         }
       }
+    });
+    this.articleService.getArticles().pipe(take(1)).subscribe((articleModals: ArticleModal[]) => {
+      for (const article of articleModals) {
+        this.articles.push(
+          {
+            name: article.title,
+            image: article.image,
+            description: article.description,
+            id: article.id
+          }
+        )
+      }
       this.isLoading = false;
     });
+  }
+  link(){
+    location.href = 'https://edsm7c.com/';
   }
   get isAdmin() {
     return this.authService.isAdmin;

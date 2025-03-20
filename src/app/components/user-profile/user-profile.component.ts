@@ -10,6 +10,8 @@ import {Router} from "@angular/router";
 import {MatDialog} from "@angular/material/dialog";
 import {ConfirmDialogComponent} from "./ConfirmDialog.component";
 import {AvatarDialogComponent} from "./AvatarDialog.component";
+import {ResultModal} from "../../shared/modal/result";
+import {ResultService} from "../../shared/result.service";
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
@@ -20,6 +22,7 @@ export class UserProfileComponent implements OnInit {
     public authService: AuthService,
     public usersService: UsersService,
     private categoryService: CategoryService,
+    private resultService: ResultService,
     private quizService: QuizService,
     private clipboardService: ClipboardService,
     private router: Router,
@@ -27,14 +30,15 @@ export class UserProfileComponent implements OnInit {
   ) {}
 
   quizzes: (QuizModal | null)[] = [];
+  results: (ResultModal | null)[] = [];
   currentPage = 1;
   pageSize = 5;
   isLoading: Boolean = false;
   public showChangeAvatar: boolean = false;
   ngOnInit(): void {
     this.loadQuizzes();
+    this.loadResults();
   }
-
   loadQuizzes(): void {
     this.isLoading = true;
     if(!this.authService.getUserID())
@@ -73,6 +77,34 @@ export class UserProfileComponent implements OnInit {
     )
   }
 
+  loadResults(): void {
+    this.isLoading = true;
+    if(!this.authService.getUserID())
+      return;
+
+    this.usersService.getUserData(this.authService.getUserID()).pipe(take(1)).subscribe(
+      user => {
+
+        if(!user) {
+          this.isLoading  = false;
+          return;
+        }
+
+        // @ts-ignore
+        this.resultService.getResultsById(user.results).pipe(take(1))
+          .subscribe(
+            (results: (ResultModal | null)[]) => {
+
+              if(results) {
+                this.results = results;
+              }
+              this.isLoading  = false;
+            }
+          );
+      }
+    )
+  }
+
   deleteQuiz(quiz: QuizModal): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '250px',
@@ -89,6 +121,9 @@ export class UserProfileComponent implements OnInit {
 
       }
     });
+  }
+  viewResult(id: any): void {
+    this.router.navigate(['result', id])
   }
   solveQuiz(quiz: QuizModal): void {
     this.router.navigate(['quiz', quiz.quizID])

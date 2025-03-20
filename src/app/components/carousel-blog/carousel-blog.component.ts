@@ -3,19 +3,19 @@ import {CarouselComponent} from "../carousel/carousel.component";
 import { IconNamesEnum } from 'ngx-bootstrap-icons';
 
 @Component({
-  selector: 'app-carousel-category',
-  templateUrl: './carousel-category.component.html',
-  styleUrls: [ '../carousel/carousel.component.sass', './carousel-category.component.sass']
+  selector: 'app-carousel-blog',
+  templateUrl: './carousel-blog.component.html',
+  styleUrls: [ '../carousel/carousel.component.sass', './carousel-blog.component.sass']
 })
-export class CarouselCategoryComponent extends CarouselComponent{
+export class CarouselBlogComponent extends CarouselComponent{
 
-  @Input() override itemWidth = 275;
-  @Input() override itemHeight = 490;
+  @Input() override itemWidth = 560;
+  @Input() override itemHeight = 580;
   @Input() iconSize = '30px';
   iconNames = IconNamesEnum;
 
   navigate(categoryId: string){
-    this.router.navigate(["tag", categoryId])
+    this.router.navigate(["articles", categoryId])
   }
 
 }

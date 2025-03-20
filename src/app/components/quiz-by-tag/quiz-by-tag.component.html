@@ -1,6 +1,6 @@
 
-
-<div class="container dark-background">
+<app-navbar [hidden]="isLoading"></app-navbar>
+<div class="container">
 
   <div class="spinner" *ngIf="isLoading">
     <mat-spinner></mat-spinner>
@@ -20,13 +20,13 @@
           <button mat-flat-button class="submit-btn" (click)="this.router.navigate([''])" color="primary">Back to Home</button>
         </mat-card-content>
     </mat-card>
-    <mat-card  [style]="valueAsStyle" *ngIf="quizService.questionData && !isLoading && !isQuizNotFound">
+    <mat-card [style]="valueAsStyle" *ngIf="quizService.questionData && !isLoading && !isQuizNotFound">
 
       <div class="nav-tab">
 
-        <button mat-flat-button (click)="back()">
+        <button mat-flat-button (click)="this.router.navigate([''])">
           <fa-icon [icon]="faArrowLeft"></fa-icon>
-          Back
+          {{ 'RETURN' | translate}}
         </button>
 
       <div class="display-timer">
@@ -36,26 +36,46 @@
         </button>
       </div>
       </div>
+      <div class="boy">
+        <img src='/assets/manga/b{{boyPicture}}.png' />
+      </div>
+      <div class="girl">
+        <img src='/assets/manga/g{{girlPicture}}.png' />
+      </div>
         <mat-card-header>
             <!-- Question -->
             <mat-card-title-group>
-              <mat-card-subtitle>Question {{quizService.qnProgress+1}}
+              <mat-card-subtitle><h1>
+                {{ 'SCENE' | translate}} {{quizService.qnProgress+1}}</h1>
               </mat-card-subtitle>
-              <mat-card-title>{{quizService.questionData[quizService.qnProgress].question}}
+              <mat-card-title
+                style="
+                padding: 50px;
+                text-align: center;
+                     background-size: 100% 100%;
+                     background-image: url('/assets/manga/cloudl1.png');"
+              >
+                    {{ quizService.tagId + '.question' + (quizService.qnProgress+1) | translate}}
+<!--                {{quizService.questionData[quizService.qnProgress].question}}-->
               </mat-card-title>
             </mat-card-title-group>
-
-
-
         </mat-card-header>
         <mat-card-content *ngIf="quizService.questionData[quizService.qnProgress].options.length">
-          <div class="option-buttons-container">
+          <div class="option-buttons-container"
+               style="
+                padding: 185px;
+                text-align: center;
+                     background-size: 100% 100%;
+                     background-image: url('/assets/manga/cloud3.png');"
+          >
           <mat-checkbox color="primary" #check *ngFor="let option of quizService.questionData[quizService.qnProgress].options let i = index" (change)="answerChecked(i, option.points, check.checked)">
-            {{option.option}}
+                {{ quizService.tagId + '.option' + i | translate}}
+<!--            {{option.option}}-->
           </mat-checkbox>
           </div>
           <mat-divider style="margin-bottom: 20px"></mat-divider>
-          <button mat-flat-button color="primary" (click)="selectAnswer()"> Next -></button>
+          <button mat-flat-button (click)="selectAnswer()">
+            {{ 'NEXT' | translate}} <fa-icon [icon]="faArrowRight"></fa-icon></button>
         </mat-card-content>
 
     </mat-card>

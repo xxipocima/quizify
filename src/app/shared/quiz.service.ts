@@ -32,6 +32,7 @@ export class QuizService {
   correctAnsCount: number = 0;
   quizId = "";
   resultID = "";
+  recommendations = "";
   tagId: string | undefined = "";
   constructor(
     private authService: AuthService,
@@ -113,10 +114,10 @@ export class QuizService {
       if (res.exists && res.data()) {
         const quizData = res.data() as QuizModal;
         quizData.quizID = quizID;
-        quizData.questions = quizData.questions
-          .map(value => ({ value, sort: Math.random() }))
-          .sort((a, b) => a.sort - b.sort)
-          .map(({ value }) => value);
+        // quizData.questions = quizData.questions
+        //   .map(value => ({ value, sort: Math.random() }))
+        //   .sort((a, b) => a.sort - b.sort)
+        //   .map(({ value }) => value);
         return quizData;
       } else {
         return null;

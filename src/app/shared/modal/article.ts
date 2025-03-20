@@ -1,7 +1,8 @@
-export interface BlogModal {
+export interface ArticleModal {
     id: string;
     title: string;
     description: string;
-    icon: string;
+    image: string;
+    userId: string;
     lang: string;
 }

@@ -2,14 +2,12 @@ import {AuthService} from "./auth/auth.service";
 import {Router} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Injectable} from "@angular/core";
-import { environment} from "../../environments/environment";
-import {CategoryModal} from "./modal/category";
 import {concatMap, map, toArray} from "rxjs/operators";
 import {from, of} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {AngularFirestore} from "@angular/fire/compat/firestore";
 import {ResultModal} from "./modal/result";
-import {QuizModal} from "./modal/quiz";
+import {CategoryModal} from "./modal/category";
 
 @Injectable({
   providedIn: 'root'
@@ -89,7 +87,19 @@ export class ResultService {
       }
     }));
   }
-  getResults(resultIDs: string[]) {
+  getResults(){
+    if (this.resultsData.length>0) {
+      return of(this.resultsData);
+    } else {
+      return this.fireStore.collection('result').get().pipe(
+        map(res => {
+          this.resultsData = res.docs.map(doc => doc.data()) as ResultModal[];
+          return this.resultsData;
+        })
+      );
+    }
+  }
+  getResultsById(resultIDs: string[]) {
     if(resultIDs === undefined || !resultIDs) null;
     return from(resultIDs).pipe(
       concatMap(resultID => this.getResultData(resultID)),

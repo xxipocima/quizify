@@ -109,6 +109,12 @@ export class UsersService {
         "username": user.username,
         "image": user.image,
         "quizzes": user.quizzes,
+        "attempts": user.attempts,
+        "isAdmin": user.isAdmin,
+        "isPaid": user.isPaid,
+        "takedQuizId": user.takedQuizId,
+        "articles": user.articles,
+        "results": user.results
       }
 
     userDocRef.get().pipe(first()).subscribe(docSnapshot => {

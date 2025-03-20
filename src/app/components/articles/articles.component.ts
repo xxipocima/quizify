@@ -4,24 +4,27 @@ import {CarouselItem} from "../../shared/utils/carousel-item.interface";
 
 import {IconName as BootstrapIconName, IconNamesEnum} from 'ngx-bootstrap-icons';
 import {PromoQuizModal} from "../../shared/modal/promoQuiz";
-import {Subject, take} from "rxjs";
+import {first, Subject, switchMap, take} from "rxjs";
 import {CategoryModal} from "../../shared/modal/category";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormBuilder} from "@angular/forms";
 import {CategoryService} from "../../shared/category.service";
 import {QuizService} from "../../shared/quiz.service";
 import {AuthService} from "../../shared/auth/auth.service";
-import {takeUntil} from "rxjs/operators";
+import {map, takeUntil} from "rxjs/operators";
+import {ArticleModal} from "../../shared/modal/article";
+import {ArticleService} from "../../shared/article.service";
 
 @Component({
-  selector: 'app-services',
-  templateUrl: './services.component.html',
-  styleUrls: ['./services.component.sass']
+  selector: 'app-articles',
+  templateUrl: './articles.component.html',
+  styleUrls: ['./articles.component.sass']
 })
-export class BlogComponent implements OnInit{
-  public categories: (CategoryModal | undefined)[] = [];
-  public categoriesIDs: string[] = [];
-  public categoriesFound: boolean = true;
+export class ArticlesComponent implements OnInit{
+  public articles: (ArticleModal | undefined | null)[] = [];
+  public article: ArticleModal | null = null;
+  public articlesIDs: string[] = [];
+  public articlesFound: boolean = true;
   public pageSize: number = 10;
   public currentPage: number = 1;
   private currentIndex: number = 0;
@@ -30,59 +33,64 @@ export class BlogComponent implements OnInit{
     private authService: AuthService,
     public router: Router,
     private route: ActivatedRoute,
-    private categoryService: CategoryService
+    private articleService: ArticleService
   ) { }
 
 
   isLoading: Boolean = false;
-  isServices: Boolean = false;
-  isFreeTest: Boolean = false;
+  isSngleArticle: Boolean = false;
+  isListArticles: Boolean = false;
 
   ngOnInit() {
     this.isLoading = true;
-
-    this.route.data.subscribe(data => {
-      if (data['name'] === 'services'){
-        this.isServices = true;
-        this.getCategories();
-      } else {
-        this.isFreeTest = true;
+    this.route.params.pipe(
+      map(params => params['id']),
+      switchMap(id => this.articleService.getArticleData(id))
+    ).pipe(first()).subscribe(result => {
+      if(result){
+        this.isSngleArticle = true;
+        this.isListArticles = false;
+        this.article = result;
       }
     });
+    if(!this.isSngleArticle) {
+      this.isListArticles = true;
+      this.isSngleArticle = false;
+      this.getArticles();
+    }
 
     this.isLoading = false;
   }
-  getCategories() {
-    this.categoryService.getCategories().pipe(take(1)).subscribe((categoryModals: CategoryModal[]) => {
-      for (const category of categoryModals) {
-        this.categoriesIDs.push(category.id);
+  getArticles() {
+    this.articleService.getArticles().pipe(take(1)).subscribe((articleModals: ArticleModal[]) => {
+      for (const article of articleModals) {
+        this.articlesIDs.push(article.id);
       }
-      if (this.categoriesIDs.length === 0) {
-        this.categoriesFound = false;
+      if (this.articlesIDs.length === 0) {
+        this.articlesFound = false;
       } else {
-        this.loadMoreCategories();
+        this.loadMoreArticles();
       }
     });
   }
 
-  loadMoreCategories(): void {
-    const categorySubset = this.categoriesIDs.slice(this.currentIndex, this.currentIndex + this.pageSize);
-    this.categoryService.getCategoriesByIDs(categorySubset)
+  loadMoreArticles(): void {
+    const articleSubset = this.articlesIDs.slice(this.currentIndex, this.currentIndex + this.pageSize);
+    this.articleService.getArticlesByIDs(articleSubset)
       .pipe(takeUntil(this.unsubscribe$))
-      .subscribe(categories => {
-        if(!categories)
+      .subscribe(articles => {
+        if(!articles)
           return;
-        this.categories = [...this.categories, ...categories];
-        console.log('cat', this.categories)
+        this.articles = [...this.articles, ...articles];
         this.currentIndex += this.pageSize;
       });
   }
-  pageCategoriesChange(newPage: number): void {
+  pageArticlesChange(newPage: number): void {
     this.currentPage = newPage;
-    this.loadMoreCategories();
+    this.loadMoreArticles();
   }
-  navigate(categoryId: string){
-    this.router.navigate(["tag", categoryId])
+  navigate(articleId: string){
+    this.router.navigate(["articles", articleId])
   }
   get isAdmin() {
     return this.authService.isAdmin;

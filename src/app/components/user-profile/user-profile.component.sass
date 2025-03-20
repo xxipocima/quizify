@@ -1,18 +1,22 @@
+@import "../../../assets/styles"
 @import "../../../assets/styles/variables"
 
 .container
   display: block
   justify-content: center
   align-items: center
-  width: 100%
+  width: 52%
   overflow-y: auto
-  margin: 0
+  margin: 0 auto
   padding-block: 30px
   max-width: unset
 
   mat-card
     margin: auto
     text-align: center
+    color: #514033
+    background-color: transparent
+    border: 1px solid #ffe2d6
     @media #{$small-mobile}, #{$large-mobile}
       width: 100%
       height: 100%
@@ -153,6 +157,17 @@
       transition: .5s ease
     .change-avatar-icon
       opacity: 1
-
+.button-start
+  border: 1px solid #514039
+  border-radius: 0
+  margin-top: 75px
+  color: #fff !important
+  background-color: #514039 !important
+  &:hover
+    color: #514039 !important
+    @include transition(color)
+    background-color: transparent !important
+    @include transition(background-color)
+    text-decoration: underline
 .media
   text-align: center

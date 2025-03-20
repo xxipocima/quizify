@@ -1,12 +1,23 @@
 @import "../../../assets/styles/variables"
+.logo
+  display: block
+  font-size: 30px
+  text-decoration: none
+  color: #514033
+  padding: 30px 50px 75px
 
 footer
-  padding-block: 30px
+  border-top: 1px solid
   overflow: hidden
+  margin: 0 50px
+  box-shadow: none
+  @media #{$sm-layout}
+    padding-top: 35px
 
 .col-md-4
-  padding-inline: 50px
+  //padding-inline: 50px
   @media #{$sm-layout}
+    border: none !important
     text-align: center !important
 
 .row

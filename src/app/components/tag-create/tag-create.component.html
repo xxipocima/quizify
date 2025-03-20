@@ -5,7 +5,7 @@
   </div>
 
   <div class="user-container">
-      <h5>Tags: {{categories ? categories.length : 0}}</h5>
+      <h5>Categories: {{categories ? categories.length : 0}}</h5>
       <ng-container>
         <div class="row quiz-row">
           <div class="col-md-6" *ngFor="let category of categories">
@@ -17,7 +17,7 @@
                 </mat-card-header>
                 <mat-card-content>
                   <button mat-flat-button (click)="navigate(category.id)">Manage Questions</button>
-                  <button mat-flat-button color="primary" (click)="editCategory(category.id)">Manage Tag</button>
+                  <button mat-flat-button color="primary" (click)="editCategory(category.id)">Manage Category</button>
                 </mat-card-content>
               </mat-card>
             </div>

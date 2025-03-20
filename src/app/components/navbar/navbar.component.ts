@@ -8,7 +8,9 @@ import {
   faRightFromBracket,
   faExpand,
   faFileClipboard,
-  faStickyNote, faUserNinja
+  faStickyNote,
+  faUserNinja,
+  faNewspaper
 } from "@fortawesome/free-solid-svg-icons";
 import {first} from "rxjs";
 
@@ -24,6 +26,8 @@ export class NavbarComponent implements OnInit{
   faRightFromBracket = faRightFromBracket
   faStickyNote = faStickyNote
   faUserNinja = faUserNinja
+  faNewspaper = faNewspaper
+  faExpand = faExpand
 
   isSignInPage = false;
   username = ""

@@ -1,6 +1,7 @@
 <app-navbar></app-navbar>
 
-<div class="container dark-background">
+<div style="padding: 60px"></div>
+<div class="container">
   <div class="spinner" *ngIf="!user">
     <mat-spinner></mat-spinner>
   </div>
@@ -38,7 +39,7 @@
         </mat-checkbox>
 
         <div class="submit-wrapper">
-          <button mat-flat-button color="accent" type="submit">
+          <button mat-flat-button class="button-start" type="submit">
             <i-bs width="25" height="25" name="check2-circle"></i-bs>
             Save changes
           </button>
@@ -48,3 +49,5 @@
   </mat-card>
 
 </div>
+
+<app-footer></app-footer>

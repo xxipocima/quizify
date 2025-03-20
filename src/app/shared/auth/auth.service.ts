@@ -41,7 +41,7 @@ export class AuthService implements OnInit, OnDestroy{
               else
               {
                 usersService.generateUsername(user.email || "quizifyer").pipe(takeUntil(this.destroy$)).subscribe(username => {
-                  this.saveUser({username: username, attempts: 1, isAdmin: false, isPaid: false, takedQuizId: '', results: []}, user);
+                  this.saveUser({username: username}, user);
                 });
               }
             }
@@ -228,7 +228,7 @@ export class AuthService implements OnInit, OnDestroy{
       console.log(username)
       console.log(email)
 
-      this.user = new UserModal(username, email, user.uid, this.getImage(user), [])
+      this.user = new UserModal(username, email, user.uid, 'assets/avatars/avatar_18.jpg', [])
       console.log(this.user)
       const usersService = this.injector.get(UsersService)
       usersService.sendUsersData(this.user);
@@ -337,6 +337,13 @@ export class AuthService implements OnInit, OnDestroy{
         localStorage.setItem('user', JSON.stringify(this.userData));
       }
     });
+  }
+
+  public getCurrentLang(){
+    const currentLang = localStorage.getItem('language');
+    if(currentLang)
+      return currentLang;
+    return 'en';
   }
 
 }

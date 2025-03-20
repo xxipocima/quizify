@@ -7,19 +7,19 @@
   <div style="padding: 60px"></div>
   <main *ngIf="!isLoading">
 
-    <div *ngIf="isServices">
-      <h5>Servises: {{categories ? categories.length : 0}}</h5>
+    <div *ngIf="isListArticles">
+      <h5>Articles: {{articles ? articles.length : 0}}</h5>
       <ng-container>
         <div class="row quiz-row">
-          <div class="col-md-6" *ngFor="let category of categories">
-            <div *ngIf="category">
-              <mat-card class="quiz-card" *ngIf="category.name">
+          <div class="col-md-6" *ngFor="let article of articles">
+            <div *ngIf="article">
+              <mat-card class="quiz-card" *ngIf="article.title">
                 <mat-card-header>
-                  <mat-card-title class="quiz-title">{{ category.name }}</mat-card-title>
-                  <mat-card-subtitle>{{ category.description }}</mat-card-subtitle>
+                  <mat-card-title class="quiz-title">{{ article.title }}</mat-card-title>
+                  <mat-card-subtitle>{{ article.description }}</mat-card-subtitle>
                 </mat-card-header>
                 <mat-card-content>
-                  <button mat-flat-button class="button-start" (click)="navigate(category.id)">
+                  <button mat-flat-button class="button-start" (click)="navigate(article.id)">
                     {{ 'CARUSEL_BUTTON' | translate}}
                   </button>
                 </mat-card-content>
@@ -29,18 +29,12 @@
           </div>
         </div>
 
-        <ngb-pagination [collectionSize]="categories.length" [(page)]="currentPage" [pageSize]="pageSize" (pageChange)="pageCategoriesChange($event)"></ngb-pagination>
+        <ngb-pagination [collectionSize]="articles.length" [(page)]="currentPage" [pageSize]="pageSize" (pageChange)="pageArticlesChange($event)"></ngb-pagination>
       </ng-container>
     </div>
-    <div *ngIf="isFreeTest">
-      <h2>EDSM7C test description</h2>
-      <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
-      <div class="submit-wrapper">
-        <button mat-flat-button color="accent" (click)="this.router.navigate(['test/awareness'])">
-          <i-bs width="25" height="25" name="check2-circle"></i-bs>
-          Start EDSM7C test
-        </button>
-      </div>
+    <div class="single-article" *ngIf="isSngleArticle && article">
+      <h2>{{ article.title }}</h2>
+      <p>{{ article.description }}</p>
     </div>
     <div style="padding: 20px"></div>
   </main>

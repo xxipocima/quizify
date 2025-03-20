@@ -1,8 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Router } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {QuizService} from "../../shared/quiz.service";
+import {map} from "rxjs/operators";
+import {first, switchMap} from "rxjs";
+import {IconName as BootstrapIconName} from "ngx-bootstrap-icons/lib/types/icon-names.type";
+import {ResultService} from "../../shared/result.service";
 
 @Component({
   selector: 'app-result',
@@ -12,18 +16,44 @@ import {QuizService} from "../../shared/quiz.service";
 export class ResultComponent implements OnInit {
 
 
-  userDetails: any;
-  isSubmitted: boolean = false;
-  resultAnswes: any;
+  public userDetails: any;
+  public isSubmitted: boolean = false;
+  public resultAnswes: any;
+  public resultId: string | undefined;
 
-  constructor(public quizService: QuizService, private router: Router, private _snackBar: MatSnackBar) { }
+  constructor(
+    public quizService: QuizService,
+    private _snackBar: MatSnackBar,
+    private route: ActivatedRoute,
+    private resultService: ResultService,
+    public router: Router
+  ) { }
 
   ngOnInit(): void {
-    if(this.quizService.questionData.length === 0)
-      this.router.navigate([""]);
-    this.quizService.correctAnsCount = 0;
-    this.resultAnswes = this.quizService.answers.map(value => JSON.parse(value))
-    this.getAnswers();
+    this.route.params.pipe(
+      map(params => this.resultId = params['id']),
+      switchMap(id => this.resultService.getResultData(id))
+    ).pipe(first()).subscribe(result => {
+      if(result){
+        this.quizService.questionData = result.questionData;
+        this.quizService.answers = result.answers;
+        this.quizService.points = result.points;
+        this.quizService.answersTime = result.answersTime;
+        this.quizService.seconds = result.seconds;
+        this.quizService.qnProgress = result.qnProgress;
+        this.quizService.correctAnsCount = result.correctAnsCount;
+        // @ts-ignore
+        this.quizService.resultID = result.resultID;
+        this.quizService.tagId = result.categoryName;
+        this.quizService.recommendations = result.recommendations;
+      }
+      console.log(this.quizService.questionData)
+      if(this.quizService.questionData.length === 0)
+        this.router.navigate([""]);
+      this.quizService.correctAnsCount = 0;
+      this.resultAnswes = this.quizService.answers.map(value => JSON.parse(value))
+      this.getAnswers();
+    });
   }
 
   getAnswers() {

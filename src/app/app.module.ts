@@ -1,13 +1,15 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {CommonModule} from "@angular/common";
-import {AngularFirestoreModule} from "@angular/fire/compat/firestore";
+import {AngularFirestore, AngularFirestoreModule} from "@angular/fire/compat/firestore";
 import {environment} from "../environments/environment";
 import {AngularFireModule} from "@angular/fire/compat";
-import {HttpClientModule} from "@angular/common/http";
 import {AngularFireAuthModule} from "@angular/fire/compat/auth";
 import {AngularFireStorageModule} from "@angular/fire/compat/storage";
 import {AngularFireDatabaseModule} from "@angular/fire/compat/database";
@@ -48,8 +50,22 @@ import {TagCreateComponent} from "./components/tag-create/tag-create.component";
 import {PackageComponent} from "./components/package/package.component";
 import {ResultService} from "./shared/result.service";
 import {QuizByTagComponent} from "./components/quiz-by-tag/quiz-by-tag.component";
+import {ServicesComponent} from "./components/services/services.component";
+import {LanguageSwitcherComponent} from "./components/language-switcher/language-switcher.component";
+import {CarouselBlogComponent} from "./components/carousel-blog/carousel-blog.component";
+import {TranslateFirebaseLoader} from "./shared/translate-firebase-loader.service";
+import {ArticlesComponent} from "./components/articles/articles.component";
 
+// Factory function to create the translation loader
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
 
+// Factory function to create the translation loader from Firebase
+// export function FirestoreTranslationsLoaderFactory(db: AngularFirestore) {
+//   // @ts-ignore
+//   return new TranslateFirebaseLoader(db);
+// }
 @NgModule({
     declarations: [
       AppComponent,
@@ -63,8 +79,11 @@ import {QuizByTagComponent} from "./components/quiz-by-tag/quiz-by-tag.component
       ResultComponent,
       CarouselComponent,
       CarouselCategoryComponent,
+      CarouselBlogComponent,
       QuizByTagComponent,
       PackageComponent,
+      ServicesComponent,
+      ArticlesComponent,
       QuizCreatorComponent,
       TagCreateComponent,
       CreateSuccessComponent,
@@ -95,7 +114,17 @@ import {QuizByTagComponent} from "./components/quiz-by-tag/quiz-by-tag.component
     NgbPaginationModule,
     MatDialogModule,
     ConfirmDialogComponent,
-    MatCheckboxModule
+    MatCheckboxModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient],
+        // useFactory: FirestoreTranslationsLoaderFactory,
+        // deps: [AngularFirestore],
+      },
+    }),
+    LanguageSwitcherComponent,
   ],
   providers: [
     AuthService,

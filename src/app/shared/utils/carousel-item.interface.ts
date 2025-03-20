@@ -4,6 +4,7 @@ import {IconName} from "ngx-bootstrap-icons";
 export interface CarouselItem {
   image?: string;
   name?: string;
+  description?: string;
   icon?: IconProp;
   iconName?: string
   bootstrapIconName?: IconName

@@ -16,12 +16,22 @@ import {UserEditComponent} from "./components/user-edit/user-edit.component";
 import {TagCreateComponent} from "./components/tag-create/tag-create.component";
 import {PackageComponent} from "./components/package/package.component";
 import {QuizByTagComponent} from "./components/quiz-by-tag/quiz-by-tag.component";
+import {ServicesComponent} from "./components/services/services.component";
+import {ArticlesComponent} from "./components/articles/articles.component";
 
 const routes: Routes = [
   {
     path: '',
     component: HomeComponent,
     pathMatch: 'full'
+  },
+  { path: 'services',
+    component: ServicesComponent,
+    data: {name: 'services'}
+  },
+  { path: 'free-test',
+    component: ServicesComponent,
+    data: {name: 'free-test'}
   },
   { path: 'account',
     component: UserProfileComponent,
@@ -52,6 +62,18 @@ const routes: Routes = [
   {
     path: 'result',
     component: ResultComponent
+  },
+  {
+    path: 'result/:id',
+    component: ResultComponent
+  },
+  {
+    path: 'articles',
+    component: ArticlesComponent
+  },
+  {
+    path: 'articles/:id',
+    component: ArticlesComponent
   },
   {
     path: 'create-quiz',
@@ -97,7 +119,7 @@ const routes: Routes = [
   { path: '**', redirectTo: '' }
 ];
 @NgModule({
-  imports: [RouterModule.forRoot(routes,  { useHash: true })],
+  imports: [RouterModule.forRoot(routes,  { useHash: false })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

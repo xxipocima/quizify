@@ -25,12 +25,12 @@ export class QuizCreatorComponent implements OnInit {
   quizForm: FormGroup;
   categories: Map<string, string> = new Map();
   points: Point[] = [
-    {value: -5, viewValue: -5},
-    {value: -4, viewValue: -4},
-    {value: -3, viewValue: -3},
-    {value: -2, viewValue: -2},
-    {value: -1, viewValue: -1},
-    {value: 0, viewValue: 0},
+    // {value: -5, viewValue: -5},
+    // {value: -4, viewValue: -4},
+    // {value: -3, viewValue: -3},
+    // {value: -2, viewValue: -2},
+    // {value: -1, viewValue: -1},
+    // {value: 0, viewValue: 0},
     {value: 1, viewValue: 1},
     {value: 2, viewValue: 2},
     {value: 3, viewValue: 3},
@@ -99,6 +99,7 @@ export class QuizCreatorComponent implements OnInit {
     this.quizForm = this.fb.group({
       name: ['', Validators.required],
       description: [''],
+      recommendations: [''],
       categoryId: [this.lastValidCategory, Validators.required],
       categoryDisplay: [this.categories.get(this.lastValidCategory)],
       questions: this.fb.array([
@@ -111,6 +112,7 @@ export class QuizCreatorComponent implements OnInit {
     this.quizForm.patchValue({
       name: quiz.name,
       description: quiz.description,
+      recommendations: quiz.recommendations,
       categoryId: quiz.categoryId,
       categoryDisplay: this.categories.get(quiz.categoryId),
     });
@@ -168,6 +170,7 @@ export class QuizCreatorComponent implements OnInit {
     return this.fb.group({
       question: ['', Validators.required],
       options: this.fb.array([
+        this.initOption(),
         this.initOption(),
         this.initOption(),
         this.initOption(),
@@ -237,6 +240,7 @@ export class QuizCreatorComponent implements OnInit {
     return {
       name: this.quizForm.get('name')?.value,
       description: this.quizForm.get('description')?.value,
+      recommendations: this.quizForm.get('recommendations')?.value,
       questions: this.mapQuestionsArrayToQuestionModalArray(this.quizForm.get('questions') as FormArray),
       categoryId: this.quizForm.get('categoryId')?.value,
       authorId: ''
