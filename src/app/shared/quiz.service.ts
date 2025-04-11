@@ -69,7 +69,7 @@ export class QuizService {
     else
       data = {...data, authorId: this.authService.userData.uid}
 
-    console.log(data)
+    // console.log(data)
    return this.fireStore.collection('quizzes').add(data).then(res =>{
      if(res.id)
      {

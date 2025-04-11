@@ -4,7 +4,7 @@
   <div style="margin: 60px"></div>
   <mat-card>
 
-    <mat-card-title>User Profile</mat-card-title>
+    <mat-card-title>{{ 'PROFILE-PAGE.title' | translate }}</mat-card-title>
     <mat-card-content>
 <!-- Sidebar navigation -->
 <div class="container-fluid dashboardContainer">
@@ -43,14 +43,14 @@
               </div>
             </div>
             <mat-card-content>
-              <button mat-flat-button class="button-start" (click)="editUser(user.username)">Edit profile</button>
+              <button mat-flat-button class="button-start" (click)="editUser(user.username)">{{ 'PROFILE-PAGE.title-edit' | translate }}</button>
             </mat-card-content>
             <div style="padding: 20px"></div>
             <div class="spinner" *ngIf="isLoading">
               <mat-spinner></mat-spinner>
             </div>
             <div clas="results" *ngIf="!isLoading">
-              <h4>Your results</h4>
+              <h4>{{ 'PROFILE-PAGE.results' | translate }}</h4>
               <div *ngIf="results.length==0">
                 no results found
               </div>
@@ -58,10 +58,10 @@
                 <div class="quiz-grid" *ngFor="let result of results">
                   <div *ngIf="result"  class="quiz-item" >
                     <div class="quiz-name">{{ result.categoryName }}</div>
-                    <div class="quiz-category">Score: {{ result.score }}</div>
+                    <div class="quiz-category">{{ 'PROFILE-PAGE.Score' | translate }}: {{ result.score }}</div>
                     <div class="quiz-actions">
                       <button (click)="viewResult(result.resultID)" mat-stroked-button type="button" matTooltip="View result">
-                        <i-bs width="20" height="20" name="pencil-square"></i-bs> View
+                        <i-bs width="20" height="20" name="pencil-square"></i-bs> {{ 'PROFILE-PAGE.BView' | translate }}
                       </button>
                     </div>
                   </div>
@@ -69,7 +69,7 @@
               </div>
             </div>
             <div clas="quizzes" *ngIf="!isLoading && isAdmin">
-              <h4>Created tests:</h4>
+              <h4>{{ 'PROFILE-PAGE.tests' | translate }} :</h4>
               <div *ngIf="quizzes.length==0">
                 no results found
               </div>
@@ -84,15 +84,14 @@
 <!--                      <i-bs width="20" height="20" name="file-earmark-check"></i-bs> Take-->
 <!--                    </button>-->
                     <button (click)="editQuiz(quiz)" mat-stroked-button type="button" matTooltip="Edit the quiz">
-                      <i-bs width="20" height="20" name="pencil-square"></i-bs> Edit
+                      <i-bs width="20" height="20" name="pencil-square"></i-bs> {{ 'PROFILE-PAGE.BEdit' | translate }}
                     </button>
                     <button  (click)="deleteQuiz(quiz)" mat-flat-button color="warn" type="button" matTooltip="Remove the quiz">
-                      <i-bs width="20" height="20" name="trash"></i-bs> Remove
+                      <i-bs width="20" height="20" name="trash"></i-bs> {{ 'PROFILE-PAGE.BRemove' | translate }}
                     </button>
-
                     <button mat-stroked-button (click)="shareQuiz(quiz)" matTooltip="Share the quiz">
                       <i class="bi bi-share"></i>
-                      Share
+                      {{ 'PROFILE-PAGE.BShare' | translate }}
                     </button>
                   </div>
                 </div>
@@ -110,7 +109,7 @@
               </div>
           </div>
           </div>
-          <button mat-flat-button color="warn" class="nav-link" (click)="authService.SignOut()"> Log out </button>
+          <button mat-flat-button color="warn" class="nav-link" (click)="authService.SignOut()">{{ 'PROFILE-PAGE.LogOut' | translate }} </button>
         </div>
       </div>
     </main>

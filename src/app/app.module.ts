@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -55,17 +55,19 @@ import {LanguageSwitcherComponent} from "./components/language-switcher/language
 import {CarouselBlogComponent} from "./components/carousel-blog/carousel-blog.component";
 import {TranslateFirebaseLoader} from "./shared/translate-firebase-loader.service";
 import {ArticlesComponent} from "./components/articles/articles.component";
+import {ArticleCreatorComponent} from "./components/article-creator/article-creator.component";
+import {CategoryCreatorComponent} from "./components/category-creator/category-creator.component";
 
 // Factory function to create the translation loader
-export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
-}
+// export function HttpLoaderFactory(http: HttpClient) {
+//   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+// }
 
 // Factory function to create the translation loader from Firebase
-// export function FirestoreTranslationsLoaderFactory(db: AngularFirestore) {
-//   // @ts-ignore
-//   return new TranslateFirebaseLoader(db);
-// }
+export function FirestoreTranslationsLoaderFactory(db: AngularFirestore) {
+  // @ts-ignore
+  return new TranslateFirebaseLoader(db);
+}
 @NgModule({
     declarations: [
       AppComponent,
@@ -85,6 +87,8 @@ export function HttpLoaderFactory(http: HttpClient) {
       ServicesComponent,
       ArticlesComponent,
       QuizCreatorComponent,
+      ArticleCreatorComponent,
+      CategoryCreatorComponent,
       TagCreateComponent,
       CreateSuccessComponent,
       UserEditComponent,
@@ -118,10 +122,10 @@ export function HttpLoaderFactory(http: HttpClient) {
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient],
-        // useFactory: FirestoreTranslationsLoaderFactory,
-        // deps: [AngularFirestore],
+        // useFactory: HttpLoaderFactory,
+        // deps: [HttpClient],
+        useFactory: FirestoreTranslationsLoaderFactory,
+        deps: [AngularFirestore],
       },
     }),
     LanguageSwitcherComponent,
@@ -131,6 +135,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     AuthGuard,
     SecureInnerPagesGuard,
     ResultService,
+    TranslateService,
     UsersService,
     ClipboardService,
     {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'outline'}},

@@ -55,7 +55,7 @@
                      background-size: 100% 100%;
                      background-image: url('/assets/manga/cloudl1.png');"
               >
-                    {{ quizService.tagId + '.question' + (quizService.qnProgress+1) | translate}}
+                    {{ quizService.questionData[quizService.qnProgress].question | translate}}
 <!--                {{quizService.questionData[quizService.qnProgress].question}}-->
               </mat-card-title>
             </mat-card-title-group>
@@ -69,7 +69,7 @@
                      background-image: url('/assets/manga/cloud3.png');"
           >
           <mat-checkbox color="primary" #check *ngFor="let option of quizService.questionData[quizService.qnProgress].options let i = index" (change)="answerChecked(i, option.points, check.checked)">
-                {{ quizService.tagId + '.option' + i | translate}}
+                {{ option.option | translate}}
 <!--            {{option.option}}-->
           </mat-checkbox>
           </div>

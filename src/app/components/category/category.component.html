@@ -13,28 +13,38 @@
         </div>
       </div>
 
-      <h2>{{ category.id + '.name' | translate}}</h2>
+      <div class="warning-text">Ce service n'est pas disponible, veuillez nous contacter pour plus d'informations.</div>
+      <div class="category-lable"><div><svg viewBox="0 0 16 16" fill="currentColor" width="16" height="16"><path fill-rule="evenodd" d="M13.593,5.09 C13.343,4.957 13.04,4.972 12.802,5.129 L11,6.334 L11,5 C11,4.448 10.551,4 10,4 L4,4 C3.449,4 3,4.448 3,5 L3,11 C3,11.552 3.449,12 4,12 L10,12 C10.551,12 11,11.552 11,11 L11,9.665 L12.802,10.87 C12.932,10.956 13.081,11 13.23,11 C13.355,11 13.479,10.97 13.593,10.909 C13.844,10.774 14,10.514 14,10.229 L14,5.772 C14,5.486 13.844,5.225 13.593,5.09"></path></svg></div> Disponible en ligne</div>
 
+      <h2>{{ category.id + '.name' | translate}}</h2>
+      <p>{{ category.id + '.description' | translate}}</p>
+      <div class="contacts-block">
+        <h4 class="">Coordonnées</h4>
+        <p class="">500 Terry A Francine Blvd. San Francisco, CA 94158</p>
+        <p class="">01 23 45 67 89</p>
+        <p class="">info@monsite.com</p>
+      </div>
 <!--      <h5>Questions: {{category.quizzes ? category.quizzes.length : 0}}</h5>-->
-      <ng-container *ngIf="quizzesFound && isAdmin; else noQuizzes">
+      <ng-container *ngIf="quizzesFound; else noQuizzes">
         <div class="row quiz-row">
-          <div class="col-md-6" *ngFor="let quiz of quizzes">
+          <div class="col-md-12" *ngFor="let quiz of quizzes">
             <div *ngIf="quiz">
               <mat-card class="quiz-card" *ngIf="quiz.quizID">
                 <mat-card-header>
-                  <mat-card-title class="quiz-title">{{ getLimitedText(quiz.name, 25) }}</mat-card-title>
-
+                  <mat-card-title class="quiz-title">{{ getLimitedText(quiz.name | translate, 25) }}</mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
-                  <p class="quiz-description">{{ getLimitedText(quiz.description, 250) }}</p>
-<!--                  <button mat-flat-button color="primary" (click)="goToQuiz(quiz.quizID)">Take the quiz</button>-->
-                  <button mat-flat-button color="primary"  (click)="editQuiz(quiz)" type="button" matTooltip="Edit the quiz">
+                  <p class="quiz-description">{{ getLimitedText(quiz.description | translate, 250) }}</p>
+                  <button mat-flat-button class="button-start" (click)="this.router.navigate(['quiz/' + quiz.quizID])">
+                    <i-bs width="25" height="25" name="check2-circle"></i-bs>
+                    {{ 'START' | translate}}
+                  </button>
+                  <button mat-flat-button color="primary" *ngIf="isAdmin" (click)="editQuiz(quiz)" type="button" matTooltip="Edit the quiz">
                     <i-bs width="20" height="20" name="pencil-square"></i-bs> Edit
                   </button>
-                  <button  (click)="deleteQuiz(quiz)" mat-flat-button color="warn" type="button" matTooltip="Remove the quiz">
+                  <button  (click)="deleteQuiz(quiz)" mat-flat-button color="warn" *ngIf="isAdmin" type="button" matTooltip="Remove the quiz">
                     <i-bs width="20" height="20" name="trash"></i-bs> Remove
                   </button>
-
 <!--                  <button mat-stroked-button (click)="shareQuiz(quiz.quizID)" >-->
 <!--                    <i class="bi bi-share"></i>-->
 <!--                    Share quiz-->
@@ -55,12 +65,21 @@
       </ng-container>
 
       <ng-template #noQuizzes>
-                <p>{{ category.id + '.description' | translate}}</p>
+<!--        <div class="warning-text">Ce service n'est pas disponible, veuillez nous contacter pour plus d'informations.</div>-->
+<!--        <div class="category-lable"><div><svg viewBox="0 0 16 16" fill="currentColor" width="16" height="16"><path fill-rule="evenodd" d="M13.593,5.09 C13.343,4.957 13.04,4.972 12.802,5.129 L11,6.334 L11,5 C11,4.448 10.551,4 10,4 L4,4 C3.449,4 3,4.448 3,5 L3,11 C3,11.552 3.449,12 4,12 L10,12 C10.551,12 11,11.552 11,11 L11,9.665 L12.802,10.87 C12.932,10.956 13.081,11 13.23,11 C13.355,11 13.479,10.97 13.593,10.909 C13.844,10.774 14,10.514 14,10.229 L14,5.772 C14,5.486 13.844,5.225 13.593,5.09"></path></svg></div> Disponible en ligne</div>-->
+
+<!--        <h2>{{ category.id + '.name' | translate}}</h2>-->
+<!--        <p>{{ category.id + '.description' | translate}}</p>-->
+<!--        <div class="contacts-block">-->
+<!--          <h4 class="">Coordonnées</h4>-->
+<!--          <p class="">500 Terry A Francine Blvd. San Francisco, CA 94158</p>-->
+<!--          <p class="">01 23 45 67 89</p>-->
+<!--          <p class="">info@monsite.com</p>-->
+<!--        </div>-->
         <button mat-flat-button class="button-start" (click)="this.router.navigate(['test/' + category.id])">
-        <i-bs width="25" height="25" name="check2-circle"></i-bs>
+          <i-bs width="25" height="25" name="check2-circle"></i-bs>
           {{ 'START' | translate}}
-      </button>
-<!--        <p>No quizzes found in this category.</p>-->
+        </button>
       </ng-template>
     </ng-container>
 

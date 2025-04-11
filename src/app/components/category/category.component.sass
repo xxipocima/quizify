@@ -10,13 +10,35 @@
   padding-block: 50px
   max-width: unset
   .category-container
-    border: 1px solid #ffe2d6
-    margin-top: 100px
+    //border: 1px solid #ffe2d6
     border-radius: 0
     padding: 60px
-    justify-items: center
-    align-items: center
-    text-align: center
+    justify-items: left
+    align-items: start
+    text-align: left
+    .warning-text
+      margin-bottom: 32px
+      padding: 16px
+      background-color: rgba(81,64,51,calc(1 * 0.05))
+      color: rgb(81,64,51)
+    .category-lable
+      display: inline-flex
+      margin-bottom: 32px
+      padding: 0 11px
+      border: 1px solid rgba(81,64,51,calc(1 * 0.05))
+      color: rgb(81,64,51)
+      border-radius: 25px
+      font-size: 14px
+    h2
+      margin-bottom: 16px
+    .contacts-block
+      margin: 32px 0
+      padding: 32px 0
+      border-top: 1px solid rgba(81,64,51,calc(1 * 0.1))
+      border-bottom: 1px solid rgba(81,64,51,calc(1 * 0.1))
+      p
+        margin-bottom: 0
+
   .spinner
     text-align: center
     justify-content: center
@@ -35,17 +57,20 @@
     padding: 0
     margin-inline: 5px
     margin-block: 15px
-    text-align: center
-    justify-content: center
-    align-items: center
-    background: $darkCommon
+    text-align: left
+    justify-content: left
+    align-items: start
+    box-shadow: none
+    border: 1px solid #ffe2d6
+    background: transparent
     mat-card-header
       .quiz-title
         text-wrap: nowrap
         font-size: 25px
-        color: $primary-dark
+        color: rgb(81,64,51)
         font-weight: 500
     mat-card-content
+      color: rgb(81,64,51)
       padding: 5px 20px
       width: 100%
       margin: 10px
@@ -85,6 +110,7 @@
   justify-content: space-between
 
 .button-start
+  float: right
   border: 1px solid #514039
   border-radius: 0
   margin-top: 75px

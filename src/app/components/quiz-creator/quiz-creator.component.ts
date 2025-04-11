@@ -9,6 +9,8 @@ import {CategoryModal} from "../../shared/modal/category";
 import {QuestionModal} from "../../shared/modal/question";
 import {ActivatedRoute, Router} from "@angular/router";
 import {AuthService} from "../../shared/auth/auth.service";
+import {TranslateService} from "@ngx-translate/core";
+import {TranslationsService} from "../../shared/translations.service";
 
 interface Point {
   value: number;
@@ -48,7 +50,17 @@ export class QuizCreatorComponent implements OnInit {
 
   editQuizId: string | undefined;
 
-  constructor(private route: ActivatedRoute, public router: Router, private fb: FormBuilder, private authService: AuthService, private categoryService: CategoryService, private quizService: QuizService) { }
+  constructor(
+    private route: ActivatedRoute,
+    public router: Router,
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private categoryService: CategoryService,
+    private translationsService: TranslationsService,
+    private translateService: TranslateService,
+    private quizService: QuizService) {
+
+  }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -74,14 +86,7 @@ export class QuizCreatorComponent implements OnInit {
         if (this.editQuizId) {
           this.quizService.getQuizData(this.editQuizId).subscribe((quiz) => {
             if(quiz) {
-
-              if(quiz.authorId == this.authService.getUserID()) {
-                this.fillFormWithQuizData(quiz);
-              }
-              else {
-                this.isEditQuizNotFound = true;
-              }
-
+              this.fillFormWithQuizData(quiz);
             }
             else{
               this.isEditQuizNotFound = true;
@@ -110,9 +115,9 @@ export class QuizCreatorComponent implements OnInit {
 
   fillFormWithQuizData(quiz: QuizModal): void {
     this.quizForm.patchValue({
-      name: quiz.name,
-      description: quiz.description,
-      recommendations: quiz.recommendations,
+      name: this.translateService.instant(quiz.name),
+      description: this.translateService.instant(quiz.description),
+      recommendations: this.translateService.instant(quiz.recommendations),
       categoryId: quiz.categoryId,
       categoryDisplay: this.categories.get(quiz.categoryId),
     });
@@ -122,7 +127,7 @@ export class QuizCreatorComponent implements OnInit {
 
   initQuestionWithData(question: QuestionModal): FormGroup {
     return this.fb.group({
-      question: [question.question, Validators.required],
+      question: [this.translateService.instant(question.question), Validators.required],
       options: this.fb.array(
         question.options.map(option => this.initQuestionOptionWithData(option)
         )
@@ -133,7 +138,7 @@ export class QuizCreatorComponent implements OnInit {
   initQuestionOptionWithData(option: any): FormGroup {
     return this.fb.group({
       points: [option.points, Validators.required],
-      option: [option.option, Validators.required]
+      option: [this.translateService.instant(option.option), Validators.required]
     });
   }
 
@@ -219,7 +224,6 @@ export class QuizCreatorComponent implements OnInit {
     optionArray.removeAt(optionIndex);
   }
 
-
   mapQuestionsArrayToQuestionModalArray(questionsArray: FormArray): QuestionModal[] {
     const questionModalArray: QuestionModal[] = [];
 
@@ -227,6 +231,30 @@ export class QuizCreatorComponent implements OnInit {
       const questionModal: { question: any; options: any; answer: any } = {
         question: questionControl.get('question')?.value,
         options: questionControl.get('options')?.value,
+        answer: questionControl.get('answer')?.value
+      };
+
+      questionModalArray.push(<QuestionModal>questionModal);
+    });
+
+    return questionModalArray;
+  }
+
+  mapQuestionsVariablesArrayToQuestionModalArray(id: any, questionsArray: FormArray): QuestionModal[] {
+    const questionModalArray: QuestionModal[] = [];
+
+    questionsArray.controls.forEach((questionControl, questionIndex) => {
+      const optionsArray: any = [];
+      questionControl.get('options')?.value.forEach((optionControl: any, optionIndex: any) => {
+        const optionModal: { points: any; option: any;} = {
+          points: optionControl.points,
+          option: id + '.questions.' + questionIndex + '.options.' + optionIndex + '.option'
+        };
+        optionsArray.push(optionModal);
+      });
+      const questionModal: { question: any; options: any; answer: any } = {
+        question: id + '.questions.' + questionIndex + '.question',
+        options: optionsArray,
         answer: questionControl.get('answer')?.value
       };
 
@@ -247,21 +275,45 @@ export class QuizCreatorComponent implements OnInit {
     };
   }
 
+  mapVariablesToQuizModal(id: any): QuizModal {
+    return {
+      name: id + '.name',
+      description: id + '.description',
+      recommendations: id + '.recommendations',
+      questions: this.mapQuestionsVariablesArrayToQuestionModalArray(id, this.quizForm.get('questions') as FormArray),
+      categoryId: this.quizForm.get('categoryId')?.value,
+      authorId: ''
+    };
+  }
+
   submitQuiz(): void {
     if (this.quizForm.valid) {
       this.isLoading = true;
       const quizData: QuizModal =  this.mapFormToQuizModal();
+      const langData: any = {};
 
       if(!this.editQuizId) {
-        this.quizService.createQuiz(quizData).then(res => {
-            console.log(res)
-            this.isLoading = false;
-            this.quizId = res;
+        this.quizService.createQuiz(quizData).then(responceAdd => {
+          const quizVariablesData: QuizModal = this.mapVariablesToQuizModal(responceAdd);
+          if (responceAdd != null) {
+            this.quizService.updateQuiz(responceAdd, quizVariablesData).then(responceUpdate => {
+                this.isLoading = false;
+              }
+            );
+            // @ts-ignore
+            langData[responceAdd] = quizData
+            this.translationsService.updateTranslations(langData);
+          }
+          this.quizId = responceAdd;
           }
         )
       } else {
-        this.quizService.updateQuiz(this.editQuizId, quizData).then(res => {
-            console.log(res)
+        const quizVariablesData: QuizModal = this.mapVariablesToQuizModal(this.editQuizId);
+        // @ts-ignore
+        langData[this.editQuizId] = quizData
+        console.log(langData);
+        this.translationsService.updateTranslations(langData);
+        this.quizService.updateQuiz(this.editQuizId, quizVariablesData).then(res => {
             this.isLoading = false;
             this.quizId = this.editQuizId;
           }

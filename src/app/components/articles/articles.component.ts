@@ -21,6 +21,7 @@ import {ArticleService} from "../../shared/article.service";
   styleUrls: ['./articles.component.sass']
 })
 export class ArticlesComponent implements OnInit{
+  public carouselArticles: CarouselItem[] = [];
   public articles: (ArticleModal | undefined | null)[] = [];
   public article: ArticleModal | null = null;
   public articlesIDs: string[] = [];
@@ -51,6 +52,18 @@ export class ArticlesComponent implements OnInit{
         this.isSngleArticle = true;
         this.isListArticles = false;
         this.article = result;
+        this.articleService.getArticles().pipe(take(1)).subscribe((articleModals: ArticleModal[]) => {
+          for (const article of articleModals) {
+            this.carouselArticles.push(
+              {
+                name: article.title,
+                image: article.image,
+                description: article.description,
+                id: article.id
+              }
+            )
+          }
+        });
       }
     });
     if(!this.isSngleArticle) {
@@ -91,6 +104,12 @@ export class ArticlesComponent implements OnInit{
   }
   navigate(articleId: string){
     this.router.navigate(["articles", articleId])
+  }
+  editArticle(articleId: string){
+    this.router.navigate(["edit-article", articleId])
+  }
+  deleteArticle(articleId: string){
+    this.router.navigate(["edit-article", articleId])
   }
   get isAdmin() {
     return this.authService.isAdmin;

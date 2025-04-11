@@ -1,16 +1,22 @@
-import {Component, OnInit, HostBinding, HostListener} from '@angular/core';
+import {Component, OnInit, HostBinding, HostListener, OnDestroy} from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import {ActivatedRoute, Router} from '@angular/router';
 import { MatRadioChange } from '@angular/material/radio';
 import {QuizService} from "../../shared/quiz.service";
 import {UsersService} from "../../shared/users.service";
 import {QuestionModal} from "../../shared/modal/question";
-import {faArrowLeft} from "@fortawesome/free-solid-svg-icons";
+import {faArrowLeft, faArrowRight} from "@fortawesome/free-solid-svg-icons";
 import { Location } from '@angular/common'
 import {QuizModal} from "../../shared/modal/quiz";
-import {first, take} from "rxjs";
+import {first, Subject, switchMap, take} from "rxjs";
 import {AuthService} from "../../shared/auth/auth.service";
 import {ResultService} from "../../shared/result.service";
+import {map, takeUntil} from "rxjs/operators";
+import {IconName as BootstrapIconName} from "ngx-bootstrap-icons/lib/types/icon-names.type";
+import {CategoryService} from "../../shared/category.service";
+import {ResultModal} from "../../shared/modal/result";
+import {UserModal} from "../../shared/modal/user";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-quiz',
@@ -20,53 +26,152 @@ import {ResultService} from "../../shared/result.service";
 export class QuizComponent implements OnInit {
 
   faArrowLeft = faArrowLeft;
-  selectedAnswer: number = 0;
-  isLoading: Boolean = false;
-  quizID: string = "";
-  isQuizNotFound = false;
-  userAttempts: number = 0;
+  faArrowRight = faArrowRight;
+  questions: (QuestionModal | null | QuestionModal[])[] = [];
+  private unsubscribe$ = new Subject<void>();
+  public quizzesIDs: string[] = [];
+  public selectedAnswer: number = 0;
+  public isLoading: Boolean = false;
+  public resultID: string = "";
+  public quizID: string = "";
+  public tagName: string = "";
+  public categoryFound: boolean = true;
+  public isQuizNotFound = false;
+  public userAttempts: number = 0;
+  public userTakedQuizId: string = "";
+  public userResults: string[] = [];
+  public arrayAnswers: any[] = [];
+  public arrayPoints: any[] = [];
+  public quizzesFound: boolean = true;
+  public boyPicture: number = Math.floor(Math.random() * 5) + 1;
+  public girlPicture: number = Math.floor(Math.random() * 5) + 1;
 
   constructor(
+    private snackBar: MatSnackBar,
     private route: ActivatedRoute,
     public quizService: QuizService,
     public UsersService: UsersService,
     public sanitizer: DomSanitizer,
     public router: Router,
-    private location: Location,
     public authService: AuthService,
+    public categoryService: CategoryService,
     public resultService: ResultService
   ) { }
 
   ngOnInit(): void {
-    const currentUser = JSON.parse(localStorage.getItem('user')!);
-    this.userAttempts = this.authService.getAttempts(currentUser)
+    this.isLoading = true;
+    const userId = this.authService.getUserID()
+    if(!userId){
+      this.router.navigate(['sign-in']);
+      return;
+    }
+    const currentUser = this.authService.getCurrentUserData();
+
+    this.userAttempts = this.authService.getAttempts(currentUser);
+    this.userResults = this.authService.getResults(currentUser);
+    this.userTakedQuizId = this.authService.getTakedQuizId(currentUser);
+    this.resultService.getResultsById(this.userResults).pipe(take(1))
+      .subscribe(
+        (results: (ResultModal | null)[]) => {
+          if(results) {
+            this.route.params.subscribe(params => {
+              results.forEach(result => {
+                if(result?.categoryName === 'awareness' && params['id'] === 'awareness' && this.userTakedQuizId === ''){
+                  this.router.navigate(['package']);
+                  return;
+                }
+              });
+            });
+          }
+        }
+      );
+
+    this.route.params.subscribe(params => {
+      if (params['id'] === 'knowledge' && !this.isPaid){
+        this.router.navigate(['package']);
+        return;
+      }
+      if (params['id'] === 'skills' && !this.isPaid){
+        this.router.navigate(['package']);
+        return;
+      }
+    });
+
     if(this.userAttempts <= 0){
       this.router.navigate(['package']);
       return;
     }
-      this.route.params.pipe(first()).subscribe(params => {
-      this.quizID = params['id'];
-      if(this.quizID) {
-        this.getQuizData(this.quizID);
-        return;
-      }
-      this.route.queryParams.pipe(first())
-        .subscribe(params => {
-          this.quizID = params['id'];
-          this.getQuizData(this.quizID);
-        }
-        );
-    });
-    if (currentUser.takedQuizId === '') {
-      this.authService.UpdateUserTakedQuiz(this.quizID);
-    }
-    if (currentUser.takedQuizId !== '' && currentUser.takedQuizId !== this.quizID){
-      this.router.navigate(['/quiz/' + currentUser.takedQuizId]);
-    }
 
-    this.quizService.qnProgress = 0;
-    this.quizService.seconds = 0;
-    this.quizService.quizId = this.quizID;
+    // console.log('currentUser.takedQuizId', currentUser)
+    // console.log('currentUser.takedQuizId', currentUser.takedQuizId)
+    if (currentUser.takedQuizId === '') {
+
+      this.resultService.createResult({
+        questionData: [],
+        answers: [],
+        points: [],
+        answersTime: [],
+        seconds: 0,
+        qnProgress: 0,
+        correctAnsCount: 0,
+        score: 0,
+        resultID: '',
+        userId: '',
+        categoryName: '',
+        recommendations: ''
+      }).then(res => {
+          this.authService.UpdateUserTakedQuiz(res);
+          this.resultID = res;
+        }
+      );
+
+      this.route.params.pipe(first()).subscribe(params => {
+        this.quizID = params['id'];
+        if(this.quizID) {
+          this.getQuizzesQuestions(this.quizID);
+          return;
+        }
+        this.route.queryParams.pipe(first())
+          .subscribe(params => {
+              this.quizID = params['id'];
+              this.getQuizzesQuestions(this.quizID);
+            }
+          );
+      });
+      this.quizService.qnProgress = 0;
+      this.quizService.seconds = 0;
+      this.quizService.resultID = this.resultID;
+      this.quizService.tagId = this.tagName;
+
+    } else {
+      this.resultService.getResultData(currentUser.takedQuizId).pipe(first()).subscribe(
+        res => {
+
+          const result: ResultModal = res as ResultModal;
+
+          if(!result)
+          {
+            this.isQuizNotFound=true;
+            return;
+          }
+          //@ts-ignore
+          this.resultID = result.resultID;
+          this.quizService.questionData = result.questionData;
+          this.quizService.answers = result.answers;
+          this.quizService.points = result.points;
+          this.quizService.answersTime = result.answersTime;
+          this.quizService.seconds = result.seconds;
+          this.quizService.qnProgress = result.qnProgress;
+          this.quizService.correctAnsCount = result.correctAnsCount;
+          this.quizService.resultID = currentUser.takedQuizId;
+          this.quizService.tagId = result.categoryName;
+          this.quizService.recommendations = result.recommendations;
+          this.startTimer();
+          this.saveResultsAtTimer();
+          this.isLoading = false;
+        }
+      );
+    }
   }
 
   public get valueAsStyle(): any {
@@ -88,38 +193,58 @@ export class QuizComponent implements OnInit {
     return progressValue;
   }
 
-  filterData(id: string, data: any) {
-    return {
-      id: id,
-      answer: data.answer,
-      imageName: data.imageName,
-      options: data.options,
-      question: data.question,
-      participantAnswer: -1
-    }
-  }
-
   // Getting quiz data
-  getQuizData(quizID: string) {
-  //  this.quizService.sendData()
-    this.isLoading = true;
-
-    this.quizService.getQuizData(quizID).pipe(first()).subscribe(
-      res => {
-
-        const quiz: QuizModal = res as QuizModal;
-
-        this.isLoading = false;
-        if(!quiz)
+  getQuizzesQuestions(quizID: string) {
+    this.quizService.getQuizData(quizID).pipe(takeUntil(this.unsubscribe$)).subscribe(
+      data => {
+        if(!data)
         {
-          this.isQuizNotFound=true;
+          this.isQuizNotFound = true;
+          this.isLoading = false;
           return;
         }
-        const filteredData: QuestionModal[] =  quiz.questions;
-        this.quizService.questionData = filteredData;
-        this.startTimer();
+        if(data){
+          data.questions.forEach(question => {
+            this.questions.push(question)
+          });
+
+          this.tagName = data.categoryId;
+          this.quizService.questionData = this.questions as QuestionModal[];
+          this.startTimer();
+          this.saveResultsAtTimer();
+          this.isLoading = false;
+        }
       }
     );
+  }
+  saveResults(){
+    console.log('this.quizService.answers',this.quizService.answers);
+    this.resultService.updateResult(this.resultID, {
+      questionData: this.quizService.questionData,
+      answers: this.quizService.answers,
+      points: this.quizService.points,
+      answersTime: this.quizService.answersTime,
+      seconds: this.quizService.seconds,
+      qnProgress: this.quizService.qnProgress,
+      correctAnsCount: this.quizService.correctAnsCount,
+      score: this.quizService.totalScore(),
+      resultID: this.quizService.resultID,
+      userId: '',
+      categoryName: this.quizService.tagId,
+      recommendations: this.quizService.recommendations,
+      complete: this.quizService.questionData.length === this.quizService.qnProgress
+    }).then(res => {
+        return res;
+      }
+    )
+  }
+
+  // Start timer
+  saveResultsAtTimer() {
+    // @ts-ignore
+    this.quizService.saveResults = setInterval(() => {
+      this.saveResults();
+    }, 5000)
   }
 
   // Start timer
@@ -130,15 +255,37 @@ export class QuizComponent implements OnInit {
     }, 1000)
   }
 
-  selectAnswer(id: any, points: any){
-    console.log(id);
-    this.quizService.answers[this.quizService.qnProgress] = id;
+  answerChecked(id: any, points: any, isChecked: boolean){
+    if (isChecked){
+      this.arrayAnswers.push(id);
+      this.arrayPoints.push(points);
+    } else {
+      this.arrayAnswers.splice(this.arrayAnswers.indexOf(id), 1);
+      this.arrayPoints.splice(this.arrayPoints.indexOf(id), 1);
+    }
+  }
+
+  selectAnswer(){
+    if (this.arrayAnswers.length <= 0){
+      this.snackBar.open('Minimum one answer need to be chosen!', "OK", {
+        duration: 5000
+      });
+      return;
+    }
+    this.quizService.answers[this.quizService.qnProgress] = JSON.stringify(this.arrayAnswers);
+    this.arrayAnswers = [];
+    this.quizService.points[this.quizService.qnProgress] = JSON.stringify(this.arrayPoints);
+    this.arrayPoints = [];
     this.quizService.answersTime[this.quizService.qnProgress] = this.quizService.displayTimeElapsed();
-    this.quizService.points[this.quizService.qnProgress] = points;
     this.quizService.qnProgress++;
-    if (this.quizService.questionData.length == this.quizService.qnProgress) {
+    this.saveResults();
+    this.boyPicture = Math.floor(Math.random() * 5) + 1;
+    this.girlPicture = Math.floor(Math.random() * 5) + 1;
+    if (this.quizService.questionData.length === this.quizService.qnProgress) {
       // @ts-ignore
       clearInterval(this.quizService.timer);
+      // @ts-ignore
+      clearInterval(this.quizService.saveResults);
       this.authService.UpdateUserTakedQuiz('');
       this.authService.UpdateUserAttempts(this.userAttempts - 1);
       this.router.navigate(['/result']);
@@ -150,5 +297,12 @@ export class QuizComponent implements OnInit {
   }
   get isPaid() {
     return this.authService.isPaid;
+  }
+
+  ngOnDestroy(): void {
+    // @ts-ignore
+    clearInterval(this.quizService.timer);
+    // @ts-ignore
+    clearInterval(this.quizService.saveResults);
   }
 }

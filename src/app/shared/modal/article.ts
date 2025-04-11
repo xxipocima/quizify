@@ -4,5 +4,4 @@ export interface ArticleModal {
     description: string;
     image: string;
     userId: string;
-    lang: string;
 }

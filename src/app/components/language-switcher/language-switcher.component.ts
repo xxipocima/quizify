@@ -1,14 +1,17 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {TranslateService} from "@ngx-translate/core";
-import {Router} from "@angular/router";
+import {TranslateModule, TranslateService} from "@ngx-translate/core";
+import {ActivatedRoute, Router} from "@angular/router";
+import {startWith, take} from "rxjs";
+import {CategoryModal} from "../../shared/modal/category";
+import {map} from "rxjs/operators";
 
 @Component({
   selector: 'app-language-switcher',
   standalone: true,
   templateUrl: './language-switcher.component.html',
   styleUrls: ['./language-switcher.component.scss'],
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
 })
 export class LanguageSwitcherComponent {
   languages = [
@@ -20,6 +23,7 @@ export class LanguageSwitcherComponent {
 
   constructor(
     private translate: TranslateService,
+    private route: ActivatedRoute,
     public router: Router
   ) {
     const savedLanguage = localStorage.getItem('language');
@@ -32,7 +36,13 @@ export class LanguageSwitcherComponent {
     this.currentLanguage = languageCode;
     this.translate.use(languageCode);
     localStorage.setItem('language', languageCode);
-    // window.location.reload();
+
+    this.route.data.subscribe(data => {
+      console.log(data)
+      if (data['reload']){
+        window.location.reload();
+      }
+    });
   }
 
   getFlag(languageCode: string): string {

@@ -7,59 +7,59 @@
   </div>
   <button mat-button class="hide-on-mobile" *ngIf="isLoggedIn && !isSignInPage" (click)="this.router.navigate(['package'])">
     <fa-icon [icon]="faStickyNote"></fa-icon>
-    Package Purchase
+    {{ 'MENU.Package' | translate }}
   </button>
   <button mat-button class="hide-on-mobile" (click)="this.router.navigate(['services'])">
-    Services
+    {{ 'MENU.Services' | translate }}
   </button>
   <button mat-button class="hide-on-mobile" (click)="this.router.navigate(['articles'])">
-    Blog
+    {{ 'MENU.Blog' | translate }}
   </button>
   <button mat-button *ngIf="!isLoggedIn && !isSignInPage" (click)="this.router.navigate(['sign-in'])">
     <fa-icon [icon]="faUser"></fa-icon>
-    Log In
+    {{ 'MENU.LogIn' | translate }}
   </button>
 
   <mat-menu #adminMenu="matMenu" xPosition="before">
     <ng-template matMenuContent>
       <button mat-menu-item *ngIf="isAdmin && isLoggedIn && !isSignInPage" (click)="this.router.navigate(['create-quiz'])">
         <fa-icon [icon]="faPlus"></fa-icon>
-        Create question
+        {{ 'MENU.question' | translate }}
       </button>
-      <button mat-menu-item *ngIf="isAdmin && isLoggedIn && !isSignInPage" (click)="this.router.navigate(['create-quiz'])">
+      <button mat-menu-item *ngIf="isAdmin && isLoggedIn && !isSignInPage" (click)="this.router.navigate(['create-article'])">
         <fa-icon [icon]="faPlus"></fa-icon>
-        Create article
+        {{ 'MENU.article' | translate }}
       </button>
-      <button mat-menu-item *ngIf="isAdmin && isLoggedIn && !isSignInPage" (click)="this.router.navigate(['create-quiz'])">
+      <button mat-menu-item *ngIf="isAdmin && isLoggedIn && !isSignInPage" (click)="this.router.navigate(['create-category'])">
         <fa-icon [icon]="faPlus"></fa-icon>
-        Create category
+        {{ 'MENU.category' | translate }}
       </button>
       <button mat-menu-item *ngIf="isAdmin && isLoggedIn && !isSignInPage" (click)="this.router.navigate(['users'])">
         <fa-icon [icon]="faPlus"></fa-icon>
-        User Management
+        {{ 'MENU.User' | translate }}
       </button>
       <button mat-menu-item *ngIf="isAdmin && isLoggedIn && !isSignInPage" (click)="this.router.navigate(['tag-create'])">
         <fa-icon [icon]="faPlus"></fa-icon>
-        Questions Management
+        {{ 'MENU.Questions' | translate }}
       </button>
     </ng-template>
   </mat-menu>
   <button mat-button *ngIf="isAdmin && isLoggedIn && !isSignInPage" [matMenuTriggerFor]="adminMenu">
     <fa-icon [icon]="faUserNinja"></fa-icon>
-    <span class="hide-on-mobile">Administrator Menu</span>
+    <span class="hide-on-mobile">{{ 'MENU.Administrator' | translate }}</span>
   </button>
   <mat-menu #mobileMenu="matMenu" xPosition="before">
     <ng-template matMenuContent>
       <button mat-menu-item *ngIf="isLoggedIn && !isSignInPage" (click)="this.router.navigate(['package'])">
         <fa-icon [icon]="faStickyNote"></fa-icon>
-        Package Purchase
+        {{ 'MENU.Package' | translate }}
       </button>
       <button mat-menu-item (click)="this.router.navigate(['services'])">
-        Services
+        {{ 'MENU.Services' | translate }}
       </button>
       <button mat-menu-item (click)="this.router.navigate(['articles'])">
         <fa-icon [icon]="faNewspaper"></fa-icon>
-        Blog
+        {{ 'MENU.Blog' | translate }}
       </button>
     </ng-template>
   </mat-menu>
@@ -74,15 +74,15 @@
     <ng-template matMenuContent>
       <button mat-menu-item (click)="this.router.navigate(['account'])">
         <fa-icon [icon]="faUser"></fa-icon>
-        My profile
+        {{ 'MENU.profile' | translate }}
       </button>
       <button mat-menu-item (click)="notComletedTest()">
         <fa-icon [icon]="faFileClipboard"></fa-icon>
-        My test in progress
+        {{ 'MENU.test' | translate }}
       </button>
       <button mat-menu-item (click)="onSignOut()">
         <fa-icon [icon]="faRightFromBracket"></fa-icon>
-        Log Out
+        {{ 'MENU.LogOut' | translate }}
       </button>
     </ng-template>
   </mat-menu>

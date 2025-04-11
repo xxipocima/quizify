@@ -1,14 +1,33 @@
 @import "../../../assets/styles/variables"
 @import "../../../assets/styles"
 .single-article
+  flex-flow: column
   border: 1px solid #ffe2d6
-  width: 52%
+  width: 58%
   border-radius: 0
   padding: 60px
   margin: 60px auto 0
-  justify-items: center
-  align-items: center
-  text-align: center
+  justify-items: left
+  align-items: start
+  text-align: left
+.recent-article
+  flex-flow: column
+  width: 58%
+  border-radius: 0
+  margin: 0 auto
+.carousel-container
+  width: 58%
+.list-articles
+  width: 52%
+  margin: 0 auto
+  justify-items: left
+  align-items: start
+  text-align: left
+  h2
+    color: #514033
+    padding: 60px 0
+  h6
+    color: rgb(125, 111, 99)
 mat-grid-tile
   background: lightblue
 .circle
@@ -53,37 +72,89 @@ mat-grid-tile
     font-size: 20px
     padding-block: 30px
 mat-card
+  display: flex
+  min-height: 350px
+  flex-flow: row
+  border: 1px solid #ffe2d6
+  box-shadow: none !important
   padding: 0
   margin-inline: 5px
   margin-block: 15px
-  text-align: center
-  justify-content: center
-  align-items: center
+  text-align: left
+  justify-content: left
+  align-items: start
   background-color: transparent
-  border: 1px solid #ffe2d6
-  mat-card-header
-    .quiz-title
-      text-wrap: nowrap
-      font-size: 25px
-      color: #514033
-      font-weight: 500
-  mat-card-content
-    padding: 5px 20px
-    width: 100%
-    margin: 10px
-    text-align: center
-    justify-content: center
-    align-items: center
-    button
-      margin: 5px
-    .quiz-description
+  .img-block
+    width: 50%
+    min-height: 350px
+    background-size: cover
+    background-position: center
+  .content-block
+    margin: 36px 24px
+    width: 50%
+    &.no-image
+      width: 100%
+    &.single
+      width: 100%
+    mat-card-header
+      padding: 0
+      display: block
+      .quiz-title
+        //text-wrap: nowrap
+        font-size: 35px
+        line-height: 35px
+        color: #514033
+        font-weight: 400
+    mat-card-content
+      padding: 20px 0 0 0
+      width: 92%
+      margin: 0
       text-align: left
-      color: grey
-    .madeBy
-      margin-top: 10px
-      text-align: left
-      color: grey
-
+      justify-content: left
+      align-items: start
+      button
+        margin: 5px
+      .quiz-description
+        text-align: left
+        color: grey
+      .madeBy
+        margin-top: 10px
+        text-align: left
+        color: grey
+    .pre-footer
+      display: flex
+      flex-flow: row
+      position: absolute
+      padding: 20px 0 10px
+      bottom: 20%
+      width: 47%
+      border-top: 1px solid #00000033
+      svg
+        margin: 0 15px
+      &.single
+        width: 80%
+    mat-card-footer
+      position: absolute
+      bottom: 0
+      width: 47%
+      border-top: 1px solid #00000033
+      &.no-image
+       width: 94%
+      &.single
+       width: 80%
+      .text-start
+        display: block
+        width: 50%
+        float: left
+        padding: 15px 0
+        font-size: 13px
+      .text-end
+        display: block
+        width: 50%
+        float: left
+        padding: 15px 0
+.page-link
+  background-color: #514039
 .button-start
   border: 1px solid #514039
   border-radius: 0
@@ -96,3 +167,7 @@ mat-card
     background-color: transparent !important
     @include transition(background-color)
     text-decoration: underline
+.manage-buttons
+  position: absolute
+  top: 0
+  right: 0

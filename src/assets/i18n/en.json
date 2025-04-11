@@ -20,6 +20,44 @@
   "DESCRIPTION-9": "Conversational",
   "CARUSEL_BUTTON": "Reserver",
   "TEST_COLLECTIONS": "test collection",
+  "LANGUAGE": "Language",
+  "MENU": {
+    "Package": "Package Purchase",
+    "Services": "Services",
+    "Blog": "Blog",
+    "LogIn": "Log In",
+    "question": "Create question",
+    "article": "Create article",
+    "category": "Create category",
+    "User": "User Management",
+    "Questions": "Questions Management",
+    "Administrator": "Administrator Menu",
+    "test": "My test in progress",
+    "profile": "My profile",
+    "LogOut": "Log Out"
+  },
+  "RESULT-PAGE": {
+    "Congratulations": "Congratulations",
+    "recommendations": "Recommendation",
+    "TScore": "Total Score",
+    "TTime": "Total Time",
+    "Result": "Result",
+    "Answer": "Answer",
+    "Score": "Score",
+    "Time": "Time"
+  },
+  "PROFILE-PAGE": {
+    "title": "User Profile",
+    "title-edit": "Edit profile",
+    "results": "Your results",
+    "tests": "Created tests",
+    "Score": "Score",
+    "BEdit": "Edit",
+    "BRemove": "Remove",
+    "BShare": "Share",
+    "BView": "View",
+    "LogOut": "Log Out"
+  },
   "JWE5JvZL3wBHYw2ro4Es": {
     "name": "Controlling our behaviors?",
     "description": "Easy! In theory... in practice, \"I've got you, you've got me by the beard\" or \"neither yes nor no\" are the tip of an iceberg of..."

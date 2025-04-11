@@ -24,6 +24,7 @@
       </mat-grid-tile>
       <mat-grid-tile class="circle big" (click)="this.router.navigate(['services'])"
                      style="
+                     background-position: 0 40%;
                      background-size: cover;
                      background-image: url('/assets/7ed6e4_6c7ad7f05af54622b418a9f760021ad5~mv2.webp');
 ">
@@ -78,6 +79,7 @@
     <div style="padding: 20px"></div>
     <!--  <h3 *ngIf="isAdmin">Tags</h3>-->
     <!--<app-carousel-category *ngIf="isAdmin" [items]="categories"></app-carousel-category>-->
+<!--    <button  (click)="this.loadData()">go!</button>-->
   </main>
 </div>
 <app-footer *ngIf="!isLoading"></app-footer>

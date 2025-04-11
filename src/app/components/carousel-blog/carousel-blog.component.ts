@@ -10,7 +10,7 @@ import { IconNamesEnum } from 'ngx-bootstrap-icons';
 export class CarouselBlogComponent extends CarouselComponent{
 
   @Input() override itemWidth = 560;
-  @Input() override itemHeight = 580;
+  @Input() override itemHeight = 530;
   @Input() iconSize = '30px';
   iconNames = IconNamesEnum;
 

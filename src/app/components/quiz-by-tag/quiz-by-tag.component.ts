@@ -202,7 +202,7 @@ export class QuizByTagComponent implements OnInit, OnDestroy {
   // Getting quiz data
   getQuizzesQuestions(quizIDs: string[]) {
   //  this.quizService.sendData()
-
+    console.log(quizIDs);
     this.quizService.getQuizzesQuestions(quizIDs).pipe(takeUntil(this.unsubscribe$)).subscribe(
       questions => {
         if(!questions)

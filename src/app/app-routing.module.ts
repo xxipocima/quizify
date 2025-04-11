@@ -18,6 +18,8 @@ import {PackageComponent} from "./components/package/package.component";
 import {QuizByTagComponent} from "./components/quiz-by-tag/quiz-by-tag.component";
 import {ServicesComponent} from "./components/services/services.component";
 import {ArticlesComponent} from "./components/articles/articles.component";
+import {ArticleCreatorComponent} from "./components/article-creator/article-creator.component";
+import {CategoryCreatorComponent} from "./components/category-creator/category-creator.component";
 
 const routes: Routes = [
   {
@@ -83,7 +85,30 @@ const routes: Routes = [
   {
     path: 'edit-quiz/:id',
     component: QuizCreatorComponent,
+    canActivate: [AuthGuard],
+    data: {reload: true}
+  },
+  {
+    path: 'create-article',
+    component: ArticleCreatorComponent,
     canActivate: [AuthGuard]
+  },
+  {
+    path: 'edit-article/:id',
+    component: ArticleCreatorComponent,
+    canActivate: [AuthGuard],
+    data: {reload: true}
+  },
+  {
+    path: 'create-category',
+    component: CategoryCreatorComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'edit-category/:id',
+    component: CategoryCreatorComponent,
+    canActivate: [AuthGuard],
+    data: {reload: true}
   },
   {
     path: 'tag/:id',
@@ -119,7 +144,7 @@ const routes: Routes = [
   { path: '**', redirectTo: '' }
 ];
 @NgModule({
-  imports: [RouterModule.forRoot(routes,  { useHash: false })],
+  imports: [RouterModule.forRoot(routes,  { useHash: true })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

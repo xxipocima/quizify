@@ -20,6 +20,44 @@
   "DESCRIPTION-9": "Conversationelle",
   "CARUSEL_BUTTON": "Réserver",
   "TEST_COLLECTIONS": "collection de tests",
+  "LANGUAGE": "Langue",
+  "MENU": {
+    "Package": "Achat d'un forfait",
+    "Services": "Services",
+    "Blog": "Blog",
+    "LogIn": "Se connecter",
+    "question": "Créer une question",
+    "article": "Créer un article",
+    "category": "Créer une catégorie",
+    "User": "Gestion des utilisateurs",
+    "Questions": "Gestion des questions",
+    "Administrator": "Menu administrateu",
+    "test": "Mon test en cours",
+    "profile": "Mon profil",
+    "LogOut": "Se déconnecter"
+  },
+  "RESULT-PAGE": {
+    "Congratulations": "Félicitations",
+    "recommendations": "Recommandation",
+    "TScore": "Score total",
+    "TTime": "Temps total",
+    "Result": "Résultat",
+    "Answer": "Réponse",
+    "Score": "Score",
+    "Time": "Temps"
+  },
+  "PROFILE-PAGE": {
+    "title": "Profil utilisateur",
+    "title-edit": "Modifier le profil",
+    "results": "Vos résultats",
+    "tests": "Tests créés",
+    "Score": "Score",
+    "BEdit": "Modifier",
+    "BRemove": "Supprimer",
+    "BShare": "Partager",
+    "BView": "Afficher",
+    "LogOut": "Se déconnecter"
+  },
   "JWE5JvZL3wBHYw2ro4Es": {
     "name": "Contrôler nos comportements ?",
     "description": "Facile ! en théorie... en pratique, \"je te tiens tu me tiens par la barbichette\" ou le\"ni oui ni non\" sont le sommet d'un iceberg de..."
@@ -30,6 +68,7 @@
   },
   "g8nlV9hOOcmy1iqvBHcd": {
     "name": "MindCodia un voyage vers l'Univers des Soft Skills",
+    "title": "test",
     "description": "**Titre : Devenir son propre mentor : un voyage inspirant avec MindCodia** Dans un monde en constante évolution, où les compétences..."
   },
   "TCCRH01": {

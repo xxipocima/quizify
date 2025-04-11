@@ -84,6 +84,12 @@ export class ServicesComponent implements OnInit{
   navigate(categoryId: string){
     this.router.navigate(["tag", categoryId])
   }
+  editCategory(categoryId: string){
+    this.router.navigate(["edit-category", categoryId])
+  }
+  deleteCategory(categoryId: string){
+    this.router.navigate(["edit-category", categoryId])
+  }
   get isAdmin() {
     return this.authService.isAdmin;
   }

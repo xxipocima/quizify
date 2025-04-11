@@ -13,6 +13,7 @@ import {QuizService} from "../../shared/quiz.service";
 import {AuthService} from "../../shared/auth/auth.service";
 import {ArticleService} from "../../shared/article.service";
 import {ArticleModal} from "../../shared/modal/article";
+import {TranslationsService} from "../../shared/translations.service";
 
 @Component({
   selector: 'app-home',
@@ -24,6 +25,7 @@ export class HomeComponent implements OnInit{
     private authService: AuthService,
     private categoryService: CategoryService,
     private articleService: ArticleService,
+    private translationsService: TranslationsService,
     public router: Router,
     private quizService: QuizService
   ) { }
@@ -83,6 +85,9 @@ export class HomeComponent implements OnInit{
   }
   link(){
     location.href = 'https://edsm7c.com/';
+  }
+  loadData(){
+    // this.translationsService.updateTranslations(data);
   }
   get isAdmin() {
     return this.authService.isAdmin;

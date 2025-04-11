@@ -1,10 +1,11 @@
+@import "../../../assets/styles"
 .container
   display: block
   justify-content: center
   align-items: center
-  width: 100%
+  width: 52%
   overflow-y: auto
-  margin: 0
+  margin: 0 auto
   padding-top: 50px
   max-width: unset
   .spinner
@@ -24,6 +25,7 @@
     button
       width: auto
   mat-card
+    background-color: transparent
     margin-block: 50px
     margin-inline: 20px
     text-align: center
@@ -48,8 +50,6 @@
 
   button
     margin-top: 1rem
-
-
 
 .quiz-form
   display: flex
@@ -84,11 +84,8 @@
         border-radius: 15px
         box-shadow: none
 
-
-
 .options
   text-align: center
-
 
   .option
     display: flex
@@ -105,7 +102,6 @@
       flex: 0.2
       margin-bottom: -1.25em
 
-
     button
       flex-shrink: 0
 
@@ -115,3 +111,15 @@
   button
     font-size: 20px
     padding-block: 20px
+
+.button-start
+  border: 1px solid #514039
+  border-radius: 0
+  color: #fff !important
+  background-color: #514039 !important
+  &:hover
+    color: #514039 !important
+    @include transition(color)
+    background-color: transparent !important
+    @include transition(background-color)
+    text-decoration: underline

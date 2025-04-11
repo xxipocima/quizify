@@ -9,5 +9,5 @@ export interface QuizModal {
      quizID?: string;
      authorName?: string;
      categoryName?: string;
-     recommendations?: string;
+     recommendations: string;
 }
