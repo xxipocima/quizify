@@ -4,12 +4,11 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
 import {UsersService} from "../users.service";
 import firebase from "firebase/compat";
-import FirebaseError = firebase.FirebaseError;
 import {UserModal} from "../modal/user";
 import User = firebase.User;
-import {createUserWithEmailAndPassword} from "@angular/fire/auth";
 import {map, takeUntil} from "rxjs/operators";
 import {lastValueFrom, Subject} from "rxjs";
+import { TranslateService } from '@ngx-translate/core';
 @Injectable({
   providedIn: 'root',
 })
@@ -19,6 +18,7 @@ export class AuthService implements OnInit, OnDestroy{
   private destroy$ = new Subject<void>();
   constructor(
     public afAuth: AngularFireAuth,
+    private readonly translateService: TranslateService,
     public router: Router,
     public ngZone: NgZone, // NgZone service to remove outside scope warning
     private injector: Injector,
@@ -339,11 +339,9 @@ export class AuthService implements OnInit, OnDestroy{
     });
   }
 
-  public getCurrentLang(){
-    const currentLang = localStorage.getItem('language');
-    if(currentLang)
-      return currentLang;
-    return 'en';
+  public getCurrentLang() {
+    const currentLang = this.translateService.currentLang || localStorage.getItem('language');
+    if (currentLang) return currentLang;
+    return this.translateService.defaultLang || 'en';
   }
-
 }

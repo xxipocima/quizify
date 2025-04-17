@@ -1,0 +1,28 @@
+import { Language } from "../models/models";
+
+export const LANGUAGE_LIST: Language[] = [
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'fr', name: 'Français', flag: '🇫🇷' },
+    { code: 'bg', name: 'Bulgare', flag: '🇧🇬' },
+    { code: 'cs', name: 'Tchèque', flag: '🇨🇿' },
+    { code: 'da', name: 'Danois', flag: '🇩🇰' },
+    { code: 'de', name: 'Allemand', flag: '🇩🇪' },
+    { code: 'et', name: 'Estonien', flag: '🇪🇪' },
+    { code: 'el', name: 'Grec', flag: '🇬🇷' },
+    { code: 'es', name: 'Espagnol', flag: '🇪🇸' },
+    { code: 'ga', name: 'Irlandais', flag: '🇮🇪' },
+    { code: 'hr', name: 'Croate', flag: '🇭🇷' },
+    { code: 'it', name: 'Italien', flag: '🇮🇹' },
+    { code: 'lv', name: 'Letton', flag: '🇱🇻' },
+    { code: 'lt', name: 'Lituanien', flag: '🇱🇹' },
+    { code: 'hu', name: 'Hongrois', flag: '🇭🇺' },
+    { code: 'mt', name: 'Maltais', flag: '🇲🇹' },
+    { code: 'nl', name: 'Néerlandais', flag: '🇳🇱' },
+    { code: 'pl', name: 'Polonais', flag: '🇵🇱' },
+    { code: 'pt', name: 'Portugais', flag: '🇵🇹' },
+    { code: 'ro', name: 'Roumain', flag: '🇷🇴' },
+    { code: 'sk', name: 'Slovaque', flag: '🇸🇰' },
+    { code: 'sl', name: 'Slovène', flag: '🇸🇮' },
+    { code: 'fi', name: 'Finnois', flag: '🇫🇮' },
+    { code: 'sv', name: 'Suédois', flag: '🇸🇪' },
+]

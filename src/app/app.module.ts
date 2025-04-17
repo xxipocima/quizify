@@ -120,6 +120,7 @@ export function FirestoreTranslationsLoaderFactory(db: AngularFirestore) {
     ConfirmDialogComponent,
     MatCheckboxModule,
     TranslateModule.forRoot({
+      defaultLanguage: 'en',
       loader: {
         provide: TranslateLoader,
         // useFactory: HttpLoaderFactory,
