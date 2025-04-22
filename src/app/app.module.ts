@@ -57,6 +57,7 @@ import {TranslateFirebaseLoader} from "./shared/translate-firebase-loader.servic
 import {ArticlesComponent} from "./components/articles/articles.component";
 import {ArticleCreatorComponent} from "./components/article-creator/article-creator.component";
 import {CategoryCreatorComponent} from "./components/category-creator/category-creator.component";
+import { UploadExcelComponent } from './components/upload-excel/upload-excel.component';
 
 // Factory function to create the translation loader
 // export function HttpLoaderFactory(http: HttpClient) {
@@ -95,7 +96,8 @@ export function FirestoreTranslationsLoaderFactory(db: AngularFirestore) {
       CategoryComponent,
       AvatarDialogComponent,
       FooterComponent,
-      UserComponent
+      UserComponent,
+      UploadExcelComponent,
     ],
   imports: [
     BrowserModule,

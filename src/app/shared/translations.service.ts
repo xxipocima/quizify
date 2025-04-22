@@ -1,7 +1,6 @@
 import {Router} from '@angular/router';
 import {Injectable} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/compat/firestore';
-import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from './auth/auth.service';
 
 @Injectable({
@@ -11,7 +10,6 @@ import { AuthService } from './auth/auth.service';
 export class TranslationsService {
   constructor(
     private readonly fireStore: AngularFirestore,
-    private readonly translateService: TranslateService,
     private readonly authService: AuthService,
     public router: Router
   ) {}

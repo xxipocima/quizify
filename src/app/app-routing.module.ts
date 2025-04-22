@@ -20,6 +20,7 @@ import {ServicesComponent} from "./components/services/services.component";
 import {ArticlesComponent} from "./components/articles/articles.component";
 import {ArticleCreatorComponent} from "./components/article-creator/article-creator.component";
 import {CategoryCreatorComponent} from "./components/category-creator/category-creator.component";
+import { UploadExcelComponent } from './components/upload-excel/upload-excel.component';
 
 const routes: Routes = [
   {
@@ -91,6 +92,11 @@ const routes: Routes = [
   {
     path: 'create-article',
     component: ArticleCreatorComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'upload-excel',
+    component: UploadExcelComponent,
     canActivate: [AuthGuard]
   },
   {
