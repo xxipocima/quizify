@@ -286,33 +286,31 @@ export class QuizCreatorComponent implements OnInit {
     };
   }
 
-  submitQuiz(): void {
+  async submitQuiz(): Promise<void> {
     if (this.quizForm.valid) {
       this.isLoading = true;
-      const quizData: QuizModal =  this.mapFormToQuizModal();
+      const quizData: QuizModal = this.mapFormToQuizModal();
       const langData: any = {};
 
       if(!this.editQuizId) {
-        this.quizService.createQuiz(quizData).then(responceAdd => {
-          const quizVariablesData: QuizModal = this.mapVariablesToQuizModal(responceAdd);
-          if (responceAdd != null) {
-            this.quizService.updateQuiz(responceAdd, quizVariablesData).then(responceUpdate => {
+        const response = await this.quizService.createQuiz(quizData);
+        const quizVariablesData: QuizModal = this.mapVariablesToQuizModal(response);
+          if (response != null) {
+            this.quizService.updateQuiz(response, quizVariablesData).then(responceUpdate => {
                 this.isLoading = false;
               }
             );
             // @ts-ignore
-            langData[responceAdd] = quizData
-            this.translationsService.updateTranslations(langData);
+            langData[response] = quizData;
+            await this.translationsService.updateTranslations(langData);
           }
-          this.quizId = responceAdd;
-          }
-        )
+          this.quizId = response;
       } else {
         const quizVariablesData: QuizModal = this.mapVariablesToQuizModal(this.editQuizId);
         // @ts-ignore
         langData[this.editQuizId] = quizData
         console.log(langData);
-        this.translationsService.updateTranslations(langData);
+        await this.translationsService.updateTranslations(langData);
         this.quizService.updateQuiz(this.editQuizId, quizVariablesData).then(res => {
             this.isLoading = false;
             this.quizId = this.editQuizId;

@@ -74,7 +74,9 @@ export class UsersService {
   generateUsername(email: string): Observable<string> {
     const parts = email.split('@');
     let username = parts[0];
+    return of(username);
 
+    /*
     return this.isUsernameExists(username).pipe(
       mergeMap(userExists => {
         if (!userExists) {
@@ -100,6 +102,7 @@ export class UsersService {
         );
       })
     );
+    */
   }
 
   sendUsersData(user: UserModal) {
@@ -109,12 +112,12 @@ export class UsersService {
         "username": user.username,
         "image": user.image,
         "quizzes": user.quizzes,
-        "attempts": user.attempts,
-        "isAdmin": user.isAdmin,
-        "isPaid": user.isPaid,
-        "takedQuizId": user.takedQuizId,
-        "articles": user.articles,
-        "results": user.results
+        "attempts": user.attempts ?? 0,
+        "isAdmin": user.isAdmin ?? false,
+        "isPaid": user.isPaid ?? false,
+        "takedQuizId": user.takedQuizId ?? [],
+        "articles": user.articles ?? [],
+        "results": user.results ?? [],
       }
 
     userDocRef.get().pipe(first()).subscribe(docSnapshot => {

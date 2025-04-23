@@ -1,27 +1,23 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
 import {Router} from '@angular/router';
-import {AngularFirestore} from "@angular/fire/compat/firestore";
-
-import {concatMap, map, toArray} from "rxjs/operators";
-import {QuizModal} from "./modal/quiz";
-
-import {QuestionModal} from "./modal/question";
-import {AuthService} from "./auth/auth.service";
-
+import {AngularFirestore} from '@angular/fire/compat/firestore';
+import {concatMap, map, toArray} from 'rxjs/operators';
+import {QuizModal} from './modal/quiz';
+import {QuestionModal} from './modal/question';
+import {AuthService} from './auth/auth.service';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
-import {first, from} from "rxjs";
+import {first, from} from 'rxjs';
+
+const COLLECTION = 'quizzes';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class QuizService {
-
   questionData: QuestionModal[] = [];
-
   answers: any[] = []
   points: any[] = []
   answersTime: any[] = []
@@ -30,17 +26,18 @@ export class QuizService {
   saveResults = null;
   qnProgress: number = 0;
   correctAnsCount: number = 0;
-  quizId = "";
-  resultID = "";
-  recommendations = "";
-  tagId: string | undefined = "";
+  quizId = '';
+  resultID = '';
+  recommendations = '';
+  tagId: string | undefined = '';
+
   constructor(
     private authService: AuthService,
-    private http: HttpClient,
     private fireStore: AngularFirestore,
     public router: Router
   ) {}
-  async addQuizToCollection(collectionId: string, quizId: string, collection: string): Promise<void> {
+
+  private async addQuizToCollection(collectionId: string, quizId: string, collection: string): Promise<void> {
     const userRef = this.fireStore.collection(collection).doc(collectionId).ref;
 
     try {
@@ -70,14 +67,14 @@ export class QuizService {
       data = {...data, authorId: this.authService.userData.uid}
 
     // console.log(data)
-   return this.fireStore.collection('quizzes').add(data).then(res =>{
+   return this.fireStore.collection(COLLECTION).add(data).then(res =>{
      if(res.id)
      {
        console.log(res.id)
        //add quiz to categories collection
-       this.addQuizToCollection(data.categoryId, res.id, "categories");
+       this.addQuizToCollection(data.categoryId, res.id, 'categories');
        //add quiz to users collection
-       this.addQuizToCollection(data.authorId, res.id, "users");
+       this.addQuizToCollection(data.authorId, res.id, 'users');
        return res.id
      }
      return undefined;
@@ -95,7 +92,7 @@ export class QuizService {
 
     console.log(data);
 
-    return this.fireStore.collection('quizzes').doc(quizId).update(data).then(() => {
+    return this.fireStore.collection(COLLECTION).doc(quizId).update(data).then(() => {
       console.log(`Quiz with ID: ${quizId} updated successfully.`);
     }, error => {
       console.error('Error while updating quiz: ', error);
@@ -110,7 +107,7 @@ export class QuizService {
   }
 
   getQuizData(quizID: string) {
-    return this.fireStore.collection('quizzes').doc(quizID).get().pipe(map(res => {
+    return this.fireStore.collection(COLLECTION).doc(quizID).get().pipe(map(res => {
       if (res.exists && res.data()) {
         const quizData = res.data() as QuizModal;
         quizData.quizID = quizID;
@@ -126,7 +123,7 @@ export class QuizService {
   }
 
   getQuizQuestions(quizID: string) {
-    return this.fireStore.collection('quizzes').doc(quizID).get().pipe(map(res => {
+    return this.fireStore.collection(COLLECTION).doc(quizID).get().pipe(map(res => {
       if (res.exists && res.data()) {
         const quizData = res.data() as QuizModal;
         return quizData.questions = quizData.questions
@@ -157,7 +154,7 @@ export class QuizService {
           quizzes: firebase.firestore.FieldValue.arrayRemove(quizId)
         });
 
-        await this.fireStore.collection('quizzes').doc(quizId).delete();
+        await this.fireStore.collection(COLLECTION).doc(quizId).delete();
 
       }
     )}
@@ -179,7 +176,7 @@ export class QuizService {
 
   totalScore():number {
     const parseData = this.points.map(value => JSON.parse(value))
-    return parseData.flat().map(a => +a).filter(a => typeof a === "number" && !isNaN(a)).reduce((a, b) => a + b, 0);
+    return parseData.flat().map(a => +a).filter(a => typeof a === 'number' && !isNaN(a)).reduce((a, b) => a + b, 0);
   }
 
   signOut() {
@@ -187,5 +184,9 @@ export class QuizService {
     // @ts-ignore
     clearInterval(this.timer);
     this.router.navigate(['/']);
+  }
+
+  private createMultilangPath(quizId: string): string {
+    return `${quizId}/${this.authService.getCurrentLang()}`;
   }
 }

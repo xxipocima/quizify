@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {TranslateModule, TranslateService} from "@ngx-translate/core";
-import {ActivatedRoute, Router} from "@angular/router";
-import {startWith, take} from "rxjs";
-import {CategoryModal} from "../../shared/modal/category";
-import {map} from "rxjs/operators";
+import {TranslateModule, TranslateService} from '@ngx-translate/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import { Language, LanguageCode } from 'src/app/models/models';
+import { LANGUAGE_LIST } from 'src/app/consts/languag-list.const';
 
 @Component({
   selector: 'app-language-switcher',
@@ -14,16 +13,12 @@ import {map} from "rxjs/operators";
   imports: [CommonModule, TranslateModule],
 })
 export class LanguageSwitcherComponent {
-  languages = [
-    { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'fr', name: 'France', flag: '🇫🇷' },
-  ];
-
-  currentLanguage = 'en';
+  public languages: Language[] = LANGUAGE_LIST;
+  public currentLanguage = this.translate.currentLang || 'en';
 
   constructor(
-    private translate: TranslateService,
-    private route: ActivatedRoute,
+    private readonly translate: TranslateService,
+    private readonly activatedRoute: ActivatedRoute,
     public router: Router
   ) {
     const savedLanguage = localStorage.getItem('language');
@@ -32,12 +27,12 @@ export class LanguageSwitcherComponent {
     }
   }
 
-  switchLanguage(languageCode: string): void {
+  switchLanguage(languageCode: LanguageCode): void {
     this.currentLanguage = languageCode;
     this.translate.use(languageCode);
     localStorage.setItem('language', languageCode);
 
-    this.route.data.subscribe(data => {
+    this.activatedRoute.data.subscribe(data => {
       console.log(data)
       if (data['reload']){
         window.location.reload();
