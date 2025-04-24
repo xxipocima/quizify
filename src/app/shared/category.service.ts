@@ -25,15 +25,16 @@ export class CategoryService {
     public router: Router
   ) {}
 
-  createTag(data: CategoryModal) : Promise<void> {
-    return this.fireStore.collection('categories').doc(data.id).set(data).then(() => {
-      console.log(`Tag with ID: ${data.id} created successfully.`);
+  createCategory(data: CategoryModal): Promise<string | void> {
+    return this.fireStore.collection('categories').add(data).then(response => {
+      console.log(`Category with ID: ${response.id} created successfully.`);
+      return response.id;
     }, error => {
       console.error('Error while creating tag: ', error);
     })
   }
 
-  updateTag(tagId: string, data: CategoryModal): Promise<void> {
+  updateCategory(tagId: string, data: CategoryModal): Promise<void> {
     return this.fireStore.collection('categories').doc(tagId).update(data).then(() => {
       console.log(`Tag with ID: ${tagId} updated successfully.`);
     }, error => {

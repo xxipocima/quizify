@@ -185,8 +185,4 @@ export class QuizService {
     clearInterval(this.timer);
     this.router.navigate(['/']);
   }
-
-  private createMultilangPath(quizId: string): string {
-    return `${quizId}/${this.authService.getCurrentLang()}`;
-  }
 }

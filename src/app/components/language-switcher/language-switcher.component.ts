@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {TranslateModule, TranslateService} from '@ngx-translate/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import { Language, LanguageCode } from 'src/app/models/models';
+import { Language } from 'src/app/models/models';
 import { LANGUAGE_LIST } from 'src/app/consts/languag-list.const';
 
 @Component({
@@ -27,7 +27,7 @@ export class LanguageSwitcherComponent {
     }
   }
 
-  switchLanguage(languageCode: LanguageCode): void {
+  switchLanguage(languageCode: string): void {
     this.currentLanguage = languageCode;
     this.translate.use(languageCode);
     localStorage.setItem('language', languageCode);

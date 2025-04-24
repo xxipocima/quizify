@@ -12,7 +12,7 @@
             <div *ngIf="category">
               <mat-card class="quiz-card" *ngIf="category.name">
                 <mat-card-header>
-                  <mat-card-title class="quiz-title">{{ category.name }}</mat-card-title>
+                  <mat-card-title class="quiz-title">{{ category.name | translate }}</mat-card-title>
                   <mat-card-subtitle>{{category.quizzes ? category.quizzes.length : 0}} {{ category.quizzes.length == 1 ? "question collection" : "question collections" }} </mat-card-subtitle>
                 </mat-card-header>
                 <mat-card-content>

@@ -22,8 +22,8 @@
   </mat-card>
 
   <mat-card *ngIf="!isLoading && !quizId && !isEditQuizNotFound">
-    <mat-card-title *ngIf="!editQuizId" style="margin-bottom: 20px">Create questions</mat-card-title>
-    <mat-card-title *ngIf="editQuizId" style="margin-bottom: 20px">Edit questions</mat-card-title>
+    <mat-card-title *ngIf="!editQuizId" style="margin-bottom: 20px">Create questions!</mat-card-title>
+    <mat-card-title *ngIf="editQuizId" style="margin-bottom: 20px">Edit questions!</mat-card-title>
     <mat-card-content>
 <form [formGroup]="quizForm" (ngSubmit)="submitQuiz()">
   <mat-form-field appearance="outline" class="quiz-form__field">
@@ -45,7 +45,7 @@
       <mat-icon>close</mat-icon>
     </button>
     <mat-autocomplete autoActiveFirstOption  #auto="matAutocomplete" (opened)="onOpen()" (closed)="onClose()">
-      <mat-option *ngFor="let category of filteredCategories | async" [value]="category" (onSelectionChange)="updateLastValid($event, category)">{{category}}</mat-option>
+      <mat-option *ngFor="let category of filteredCategories | async" [value]="category" (onSelectionChange)="updateLastValid($event, category)">{{category | translate}}</mat-option>
     </mat-autocomplete>
   </mat-form-field>
 

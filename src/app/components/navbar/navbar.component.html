@@ -26,10 +26,13 @@
         <fa-icon [icon]="faPlus"></fa-icon>
         {{ 'MENU.question' | translate }}
       </button>
+      <!--
+      Warning! Excel upload can be handled only for development purposes
       <button mat-menu-item *ngIf="isAdmin && isLoggedIn && !isSignInPage" (click)="this.router.navigate(['upload-excel'])">
         <fa-icon [icon]="faPlus"></fa-icon>
         {{ 'MENU.excel' | translate }}
       </button>
+      -->
       <button mat-menu-item *ngIf="isAdmin && isLoggedIn && !isSignInPage" (click)="this.router.navigate(['create-article'])">
         <fa-icon [icon]="faPlus"></fa-icon>
         {{ 'MENU.article' | translate }}

@@ -81,9 +81,9 @@ export class CategoryCreatorComponent implements OnInit {
     return {
       id: "",
       quizzes: [],
-      name: this.categoryForm.get('title')?.value,
+      name: this.categoryForm.get('name')?.value,
       description: this.categoryForm.get('description')?.value,
-      icon: this.categoryForm.get('image')?.value
+      icon: this.categoryForm.get('image')?.value ?? null,
     };
   }
 
@@ -100,19 +100,18 @@ export class CategoryCreatorComponent implements OnInit {
   submitCategory(): void {
     if (this.categoryForm.valid) {
       this.isLoading = true;
-      const categoryData: CategoryModal =  this.mapFormToCategoryModal();
+      const categoryData: CategoryModal = this.mapFormToCategoryModal();
       const langData: any = {};
 
       if(!this.editCategoryId) {
-        this.categoryService.createTag(categoryData).then(responceAdd => {
+        this.categoryService.createCategory(categoryData).then(responceAdd => {
           const categoryVariablesData: CategoryModal = this.mapVariablesToCategoryModal(responceAdd);
           if (responceAdd != null) {
-            this.categoryService.updateTag(responceAdd, categoryVariablesData).then(responceUpdate => {
+            this.categoryService.updateCategory(responceAdd, categoryVariablesData).then(responseUpdate => {
                 this.isLoading = false;
               }
             );
-            // @ts-ignore
-            langData[responceAdd] = quizData
+            langData[responceAdd] = categoryData;
             this.translationsService.updateTranslations(langData);
             this.categoryId = responceAdd;
           }
@@ -120,10 +119,9 @@ export class CategoryCreatorComponent implements OnInit {
         )
       } else {
         const quizVariablesData: CategoryModal = this.mapVariablesToCategoryModal(this.editCategoryId);
-        // @ts-ignore
-        langData[this.editCategoryId] = quizData
+        langData[this.editCategoryId] = quizVariablesData;
         this.translationsService.updateTranslations(langData);
-        this.categoryService.updateTag(this.editCategoryId, quizVariablesData).then(res => {
+        this.categoryService.updateCategory(this.editCategoryId, quizVariablesData).then(res => {
             this.isLoading = false;
             this.categoryId = this.editCategoryId;
           }
