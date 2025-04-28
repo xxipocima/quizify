@@ -76,8 +76,8 @@
               <div>
                 <div class="quiz-grid" *ngFor="let quiz of quizzes | slice: (currentPage-1) * pageSize : currentPage * pageSize; let i = index">
                 <div *ngIf="quiz"  class="quiz-item" >
-                  <div class="quiz-name">{{ quiz.name }}</div>
-                  <div class="quiz-category">{{ quiz.categoryName }}</div>
+                  <div class="quiz-name">{{ quiz.name | translate }}</div>
+                  <div class="quiz-category">{{ quiz.categoryName! | translate }}</div>
 <!--                  <div class="quiz-created">{{ quiz.created }}</div>-->
                   <div class="quiz-actions">
 <!--                    <button  (click)="solveQuiz(quiz)" mat-flat-button color="primary" type="button" matTooltip="Take the quiz">-->

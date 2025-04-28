@@ -144,6 +144,7 @@ export class QuizComponent implements OnInit {
       this.quizService.tagId = this.tagName;
 
     } else {
+      console.log(currentUser, currentUser.takedQuizId, 888);
       this.resultService.getResultData(currentUser.takedQuizId).pipe(first()).subscribe(
         res => {
 
@@ -219,6 +220,7 @@ export class QuizComponent implements OnInit {
   }
   saveResults(){
     console.log('this.quizService.answers',this.quizService.answers);
+    if (this.quizService.answers.length === 0) return;
     this.resultService.updateResult(this.resultID, {
       questionData: this.quizService.questionData,
       answers: this.quizService.answers,
@@ -267,7 +269,7 @@ export class QuizComponent implements OnInit {
 
   selectAnswer(){
     if (this.arrayAnswers.length <= 0){
-      this.snackBar.open('Minimum one answer need to be chosen!', "OK", {
+      this.snackBar.open('Minimum one answer need to be chosen!', 'OK', {
         duration: 5000
       });
       return;
@@ -288,7 +290,8 @@ export class QuizComponent implements OnInit {
       clearInterval(this.quizService.saveResults);
       this.authService.UpdateUserTakedQuiz('');
       this.authService.UpdateUserAttempts(this.userAttempts - 1);
-      this.router.navigate(['/result']);
+      this.authService.AddUserResult(this.resultID);
+      this.router.navigate([`/result/${this.resultID}`]);
       return;
     }
   }

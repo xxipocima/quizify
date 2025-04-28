@@ -37,7 +37,7 @@
                 <mat-expansion-panel *ngFor="let question of quizService.questionData let i=index">
                     <mat-expansion-panel-header>
                         <mat-panel-title  class="primary">
-                            {{i+1}}. {{question.question}}
+                            {{i+1}}. {{question.question | translate}}
                         </mat-panel-title>
 
                     </mat-expansion-panel-header>
@@ -53,7 +53,7 @@
 <!--                        </mat-radio-button>-->
 <!--                    </mat-radio-group>-->
                   <div *ngFor="let answer of resultAnswes[i]">
-                      <p class="answer">{{ 'RESULT-PAGE.Answer' | translate }} : {{question.options[answer].option}}</p>
+                      <p class="answer">{{ 'RESULT-PAGE.Answer' | translate }} : {{question.options[answer].option | translate}}</p>
                       <p class="answer">{{ 'RESULT-PAGE.Score' | translate }} : {{question.options[answer].points}}</p>
                   </div>
                     <p class="answer">{{ 'RESULT-PAGE.Time' | translate }} : {{quizService.answersTime[i]}}</p>

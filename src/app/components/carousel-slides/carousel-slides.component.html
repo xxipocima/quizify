@@ -1,7 +1,7 @@
 <ngb-carousel  *ngIf="items">
   <ng-template ngbSlide *ngFor="let item of items">
     <div class="image-wrapper" [ngStyle]="{'background-image': item.background }">
-      <img [src]="item.background" alt="Random slide" class="mh-100"/>
+      <!--<img [src]="item.background" alt="Random slide" class="mh-100"/>-->
     </div>
     <div class="iconWrapper" >
       <i-bs width="100%" height="100%" *ngIf="item.icon"  [name]="item.icon"></i-bs>

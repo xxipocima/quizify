@@ -3,12 +3,11 @@ import { Injectable } from '@angular/core';
 import 'firebase/auth';
 import {AuthService} from "./auth/auth.service";
 import {AngularFirestore} from "@angular/fire/compat/firestore";
-import firebase from "firebase/compat";
+import firebase from "firebase/compat/app";
+import "firebase/compat/firestore";
 import {UserModal} from "./modal/user";
-import {first, from, mergeMap, Observable, of, switchMap, take, tap} from "rxjs";
+import {first, from, Observable, of, take} from "rxjs";
 import {concatMap, map, toArray} from "rxjs/operators";
-import {CategoryModal} from "./modal/category";
-import {QuizModal} from "./modal/quiz";
 import {Router} from "@angular/router";
 
 @Injectable({
@@ -115,7 +114,7 @@ export class UsersService {
         "attempts": user.attempts ?? 0,
         "isAdmin": user.isAdmin ?? false,
         "isPaid": user.isPaid ?? false,
-        "takedQuizId": user.takedQuizId ?? [],
+        "takedQuizId": user.takedQuizId ?? '',
         "articles": user.articles ?? [],
         "results": user.results ?? [],
       }
@@ -183,6 +182,11 @@ export class UsersService {
   updateUserAtempts(userId: string, attempts: number) {
     return this.fireStore.collection('users').doc(userId).update({
       attempts: attempts
+    });
+  }
+  addUserResult(userId: string, resultId: string) {
+    return this.fireStore.collection('users').doc(userId).update({
+      results: firebase.firestore.FieldValue.arrayUnion(resultId)
     });
   }
 }

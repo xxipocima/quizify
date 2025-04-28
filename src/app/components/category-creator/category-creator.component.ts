@@ -1,7 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Observable} from "rxjs";
-import {map} from "rxjs/operators";
 import {ActivatedRoute, Router} from "@angular/router";
 import {AuthService} from "../../shared/auth/auth.service";
 import {TranslateService} from "@ngx-translate/core";
@@ -48,7 +46,7 @@ export class CategoryCreatorComponent implements OnInit {
 
         if (this.editCategoryId) {
           this.categoryService.getCategory(this.editCategoryId).subscribe((category) => {
-            if(category) {
+            if (category) {
               this.fillFormWithCategoryData(category);
             } else {
               this.isEditCategoryNotFound = true;
@@ -73,7 +71,7 @@ export class CategoryCreatorComponent implements OnInit {
     this.categoryForm.patchValue({
       name: this.translateService.instant(category.name),
       description: this.translateService.instant(category.description),
-      icon: this.translateService.instant(category.icon),
+      icon: category.icon,
     });
   }
 
@@ -83,7 +81,7 @@ export class CategoryCreatorComponent implements OnInit {
       quizzes: [],
       name: this.categoryForm.get('name')?.value,
       description: this.categoryForm.get('description')?.value,
-      icon: this.categoryForm.get('image')?.value ?? null,
+      icon: this.categoryForm.get('icon')?.value ?? null,
     };
   }
 

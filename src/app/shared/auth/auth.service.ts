@@ -339,6 +339,16 @@ export class AuthService implements OnInit, OnDestroy{
     });
   }
 
+  AddUserResult(resultId: string) {
+    const usersService = this.injector.get(UsersService);
+    usersService.addUserResult(this.getUserID(), resultId).then(() => {
+      if(this.userData) {
+        this.userData.results = [...this.userData.results, resultId];
+        localStorage.setItem('user', JSON.stringify(this.userData));
+      }
+    });
+  }
+
   public getCurrentLang() {
     const currentLang = this.translateService.currentLang || localStorage.getItem('language');
     if (currentLang) return currentLang;

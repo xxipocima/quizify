@@ -47,10 +47,10 @@ export class ResultService {
 
   async createResult(data: ResultModal) : Promise<string> {
 
-    if(this.authService.user)
+    if (this.authService.user)
       data = {...data, userId: this.authService.user.uid}
     else
-      data = {...data, userId: this.authService.userData.uid}
+      data = {...data, userId: this.authService.getCurrentUserData().uid}
 
     return this.fireStore.collection('result').add(data).then(res =>{
       if(res.id)
