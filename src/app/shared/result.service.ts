@@ -45,18 +45,20 @@ export class ResultService {
     }
   }
 
-  async createResult(data: ResultModal) : Promise<string> {
+  async createResult(data: ResultModal, isFreeQuiz: boolean = false) : Promise<string> {
 
     if (this.authService.user)
       data = {...data, userId: this.authService.user.uid}
     else
-      data = {...data, userId: this.authService.getCurrentUserData().uid}
+      data = {...data, userId: !isFreeQuiz ? this.authService.getCurrentUserData().uid : ''}
 
     return this.fireStore.collection('result').add(data).then(res =>{
       if(res.id)
       {
         //add Result to users collection
-        this.addResultToCollection(data.userId, res.id, "users");
+        if (!isFreeQuiz) {
+          this.addResultToCollection(data.userId, res.id, "users");
+        }
         return res.id
       }
       return '';
@@ -69,7 +71,7 @@ export class ResultService {
     if(this.authService.user)
       data = {...data, userId: this.authService.user.uid}
     else
-      data = {...data, userId: this.authService.userData.uid}
+      data = {...data, userId: this.authService.userData ? this.authService.userData.uid : ''}
     return this.fireStore.collection('result').doc(resultId).update(data).then(() => {
       console.log(`Result with ID: ${resultId} updated successfully.`);
     }, error => {

@@ -35,7 +35,7 @@
                 </mat-card-header>
                 <mat-card-content>
                   <p class="quiz-description">{{ getLimitedText(quiz.description | translate, 250) }}</p>
-                  <button mat-flat-button class="button-start" (click)="this.router.navigate(['quiz/' + quiz.quizID])">
+                  <button mat-flat-button class="button-start" (click)="goToQuiz(quiz.quizID)">
                     <i-bs width="25" height="25" name="check2-circle"></i-bs>
                     {{ 'START' | translate}}
                   </button>

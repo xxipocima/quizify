@@ -12,6 +12,7 @@ import {UsersService} from "../../shared/users.service";
 import {ConfirmDialogComponent} from "../user-profile/ConfirmDialog.component";
 import {MatDialog} from "@angular/material/dialog";
 import {AuthService} from "../../shared/auth/auth.service";
+import { FREE_QUIZ_ID } from 'src/app/consts/consts';
 
 @Component({
   selector: 'app-category',
@@ -95,7 +96,11 @@ export class CategoryComponent implements OnInit, OnDestroy {
   }
 
   goToQuiz(quizId: string): void {
-    this.router.navigate(["quiz", quizId]);
+    if (quizId === FREE_QUIZ_ID) {
+      this.router.navigate(['quiz', 'free']);
+    } else {
+      this.router.navigate(['quiz', quizId]);
+    }
   }
 
   getLimitedText(text: string, limit: number): string {
